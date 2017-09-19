@@ -1,0 +1,3 @@
+CREATE DATABASE shop WITH ENCODING = 'UTF8';
+CREATE USER shop_db_admin WITH PASSWORD 'admin';
+GRANT ALL ON DATABASE shop TO shop_db_admin;
