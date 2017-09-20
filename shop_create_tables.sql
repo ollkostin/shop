@@ -22,7 +22,7 @@ CREATE TABLE IF NOT EXISTS "user_role" (
 CREATE TABLE IF NOT EXISTS "product" (
   id          SERIAL,
   name        VARCHAR(255) NOT NULL,
-  price       MONEY        NOT NULL,
+  price       DECIMAL        NOT NULL,
   description TEXT,
   PRIMARY KEY (id)
 );
