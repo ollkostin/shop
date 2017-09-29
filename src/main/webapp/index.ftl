@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title> ${test}!</title>
+    <title>Shop</title>
+    <#include "resources/ftl/head.ftl">
 </head>
 <body>
-<h2> ${test}!</h2>
+<div>
+    <a href="products">Products</a>
+</div>
 </body>
 </html>
