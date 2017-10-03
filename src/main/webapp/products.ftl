@@ -2,7 +2,10 @@
 <html lang="en">
 <head>
     <title>Product list</title>
-<#include "resources/ftl/head.ftl">
+    <#include "resources/ftl/head.ftl">
+    <script src="resources/js/common.js"></script>
+    <script src="resources/js/api-product.js"></script>
+    <script src="resources/js/products.js"></script>
 </head>
 <body>
 <div class="container">
@@ -28,15 +31,14 @@
     <div class="text-center">
         <button id="prev-page"
                 class="btn btn-primary"
-                onclick="getProducts(currentPage - 1, currentSize)">
+                onclick="getProducts(currentPage - 1, currentSize ,onSuccessLoadProducts)">
             Previous
         </button>
         <button id="next-page" class="btn btn-primary"
-                onclick="getProducts(currentPage + 1, currentSize)">
+                onclick="getProducts(currentPage + 1, currentSize ,onSuccessLoadProducts)">
             Next
         </button>
     </div>
 </div>
-<script src="resources/js/product.js"></script>
 </body>
 </html>
