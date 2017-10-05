@@ -1,31 +1,36 @@
 package ru.practice.kostin.shop.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import ru.practice.kostin.shop.service.ProductPhotoService;
 
 import java.io.IOException;
-
-import static org.springframework.http.ResponseEntity.badRequest;
-import static org.springframework.http.ResponseEntity.ok;
 
 @Controller
 public class PhotoUploadController {
 
     private ProductPhotoService productPhotoService;
 
-    @PostMapping("/file/upload")
-    public ResponseEntity uploadFile(@RequestParam("file") MultipartFile file) {
+    @GetMapping("/file")
+    public String index() {
+        return "upload-form";
+    }
+
+    @PostMapping("/upload")
+    @ResponseBody
+    public String uploadFile(@RequestParam("file") MultipartFile file) { //throws UnsupportedExtensionException {
+        String path;
         try {
-            productPhotoService.saveFile(file);
+            path = productPhotoService.saveFile(file);
+            return path;
         } catch (IOException e) {
-            return badRequest().body(e.getMessage());
+            return e.getMessage();
         }
-        return ok().build();
     }
 
 
