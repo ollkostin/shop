@@ -5,12 +5,11 @@
 </head>
 <body>
 <form method="POST" enctype="multipart/form-data" action="upload">
-    <p>
-        <input type="file" name="file">
-        <input type="submit" value="Отправить"></p>
+        <label for="product-ud">Product id</label>
+        <input id="product-id" type="number" name="productId"/>
+        <label for="file">Photo</label>
+        <input id="file" type="file" name="file">
+        <input type="submit" value="Save">
 </form>
-<#if message??>
-    message
-</#if>
 </body>
 </html>

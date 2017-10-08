@@ -21,10 +21,13 @@ public class ProductPhotoService {
     @Value("${custom.image-directory-path}")
     private String fileDirectoryPath;
 
-    public String saveFile(MultipartFile multipartFile) throws IOException, UnsupportedExtensionException {
+    public String saveFile(MultipartFile multipartFile, Integer productId) throws IOException, UnsupportedExtensionException {
         String fileExtension = FileUtil.getFileExtension(multipartFile.getOriginalFilename());
         if (isSizeAllowed(multipartFile.getSize()) && isImageExtension(fileExtension)) {
-            return FileUtil.write(multipartFile, FileUtil.generateName("img_", String.valueOf(multipartFile.hashCode()),
+            return FileUtil.write(multipartFile, FileUtil.generateName(
+                    "product_",
+                    String.format("%s_%s", String.valueOf(productId),
+                            String.valueOf(multipartFile.hashCode())),
                     fileExtension), fileDirectoryPath);
         }
         return null;

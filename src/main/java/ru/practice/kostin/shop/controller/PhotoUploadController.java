@@ -22,10 +22,12 @@ public class PhotoUploadController {
         return "upload-form";
     }
 
+    //TODO:надо сделать редирект с картинками после сохранения в базу!
     @PostMapping("/upload")
     @ResponseBody
-    public String uploadFile(@RequestParam("file") MultipartFile file) throws IOException, UnsupportedExtensionException {
-        return productPhotoService.saveFile(file);
+    public String uploadFile(@RequestParam("productId") Integer productId,
+                             @RequestParam("file") MultipartFile file) throws IOException, UnsupportedExtensionException {
+        return productPhotoService.saveFile(file, productId);
     }
 
 
