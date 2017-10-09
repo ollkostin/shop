@@ -15,6 +15,14 @@ public class FileUtil {
     private static final int BUFFER_SIZE = 16384;
     private static final Logger LOGGER = LoggerFactory.getLogger(FileUtil.class);
 
+    /**
+     * Writes file into directory
+     * @param multipartFile file in in multipart/form-data format
+     * @param name file name
+     * @param fileDirectoryPath path to directory
+     * @return path to created file
+     * @throws IOException
+     */
     public static String write(MultipartFile multipartFile, String name, String fileDirectoryPath) throws IOException {
         LOGGER.info(String.format("Writing file with name \"%s\" in directory \"%s\" ", name, fileDirectoryPath));
         File file = new File(fileDirectoryPath, name);
@@ -36,6 +44,11 @@ public class FileUtil {
         }
     }
 
+    /**
+     * Gets extension of file from name
+     * @param fileName file name
+     * @return extension
+     */
     public static String getFileExtension(String fileName) {
         if (fileName.lastIndexOf(".") != -1
                 && fileName.lastIndexOf(".") != 0)
