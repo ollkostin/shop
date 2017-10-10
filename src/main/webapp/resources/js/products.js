@@ -5,22 +5,22 @@ function showProducts(productList) {
     clearChildNodes(products);
     productList.forEach(el => {
         let tr = $('<tr></tr>');
-        tr.append(buildTableData(el['id'], buildProductLink));
-        tr.append(buildTableData(el['name']));
-        tr.append(buildTableData(el['pathToPhoto'], buildImg));
+        tr.append(buildTableData(buildImg(el)));
+        tr.append(buildTableData(buildProductLink(el)));
         tr.append(buildTableData(el['price']));
         tr.append(buildTableData(cartButton()));
         products.append(tr);
     });
 }
 
-function buildProductLink(id) {
-    return $('<a href="products/' + id + '">' + id + '</a>');
+function buildProductLink(product) {
+    return $('<a href="products/' + product['id'] + '">' + product['name'] + '</a>');
 }
 
-function buildImg(pathToPhoto) {
-    let img = $('<img/>');
+function buildImg(product) {
+    let img = $('<img width="50" height="50"/>');
     img.prop('alt', 'product image');
+    img.prop('src', 'product/' + product['id'] + '/' + product['pathToPhoto']);
     return img;
 }
 
@@ -36,10 +36,10 @@ function onSizeChange() {
     let newSize = sizeSelect.options[sizeSelect.selectedIndex].value;
     if (currentSize !== newSize) {
         currentSize = newSize;
-        getProducts(currentPage, currentSize , onSuccessLoadProducts)
+        getProducts(currentPage, currentSize, onSuccessLoadProducts)
     }
 }
 
-function onSuccessLoadProducts (resp) {
+function onSuccessLoadProducts(resp) {
     showProducts(resp);
 }

@@ -19,10 +19,9 @@
     <table class="table">
         <thead>
         <tr>
-            <th>#</th>
+            <th></th>
             <td>Product name</td>
             <td>Price</td>
-            <td></td>
         </tr>
         </thead>
         <tbody id="products"></tbody>

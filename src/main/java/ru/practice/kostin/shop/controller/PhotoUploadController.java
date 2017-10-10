@@ -9,14 +9,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import ru.practice.kostin.shop.exception.FileTooLargeException;
 import ru.practice.kostin.shop.exception.UnsupportedExtensionException;
-import ru.practice.kostin.shop.service.ProductPhotoService;
+import ru.practice.kostin.shop.service.FileService;
 
 import java.io.IOException;
 
 @Controller
 public class PhotoUploadController {
 
-    private ProductPhotoService productPhotoService;
+    private FileService fileService;
 
     @GetMapping("/file")
     public String index() {
@@ -30,12 +30,12 @@ public class PhotoUploadController {
     public String uploadFile(@RequestParam("productId") Integer productId,
                              @RequestParam("file") MultipartFile file)
             throws IOException, UnsupportedExtensionException, FileTooLargeException {
-        return productPhotoService.saveFile(file, productId);
+        return fileService.saveFile(file, productId);
     }
 
 
     @Autowired
-    public void setProductPhotoService(ProductPhotoService productPhotoService) {
-        this.productPhotoService = productPhotoService;
+    public void setFileService(FileService fileService) {
+        this.fileService = fileService;
     }
 }
