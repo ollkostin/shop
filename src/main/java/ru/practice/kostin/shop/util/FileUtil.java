@@ -3,6 +3,7 @@ package ru.practice.kostin.shop.util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.multipart.MultipartFile;
+import ru.practice.kostin.shop.exception.FileTooLargeException;
 
 import java.io.*;
 import java.nio.file.FileAlreadyExistsException;
@@ -10,12 +11,14 @@ import java.nio.file.FileAlreadyExistsException;
 public class FileUtil {
 
     private static final int BUFFER_SIZE = 16384;
+    public static final String FILE_SEPARATOR = "/";
     private static final Logger LOGGER = LoggerFactory.getLogger(FileUtil.class);
 
     /**
      * Writes file into directory
-     * @param multipartFile file in in multipart/form-data format
-     * @param name file name
+     *
+     * @param multipartFile     file in in multipart/form-data format
+     * @param name              file name
      * @param fileDirectoryPath path to directory
      * @return path to created file
      * @throws IOException
@@ -23,7 +26,7 @@ public class FileUtil {
     public static String write(MultipartFile multipartFile, String name, String fileDirectoryPath) throws IOException {
         LOGGER.info(String.format("Writing file with name \"%s\" in directory \"%s\" ", name, fileDirectoryPath));
         File directory = new File(fileDirectoryPath);
-        if (!directory.exists()){
+        if (!directory.exists()) {
             directory.mkdir();
         }
         File file = new File(directory, name);
@@ -47,6 +50,7 @@ public class FileUtil {
 
     /**
      * Gets extension of file from name
+     *
      * @param fileName file name
      * @return extension
      */
@@ -58,28 +62,34 @@ public class FileUtil {
     }
 
     /**
-     *  Creates filename from prefix, body and file extension
-     * @param prefix prefix
-     * @param body body
-     * @param extension extension
-     * @return full filename
-     */
-    public static String generateName(String prefix, String body) {
-        return String.format("%s%s", prefix, body);
-    }
-
-    /**
      * Reads file by path
+     *
      * @param pathToFile path to file
      * @return file in bytes
      * @throws IOException
      */
-    public static byte[] getFile(String pathToFile) throws IOException {
+    public static byte[] getFile(String pathToFile) throws IOException, FileTooLargeException {
         File file = new File(pathToFile);
         if (file.exists()) {
-            try (FileInputStream inputStream = new FileInputStream(file)) {
-                byte[] bytes = new byte[inputStream.available()];
-                inputStream.read(bytes);
+            try (FileInputStream is = new FileInputStream(file);
+            BufferedInputStream bis = new BufferedInputStream(is)) {
+                if (file.length() > Integer.MAX_VALUE) {
+                    String errorMessage = String.format("File with name \"%s\" is too large",file.getName());
+                    LOGGER.error(errorMessage);
+                    throw new FileTooLargeException(errorMessage);
+                }
+                byte[] bytes = new byte[(int) file.length()];
+                int offset = 0;
+                int numRead = 0;
+                while (numRead != -1) {
+                    numRead = bis.read(bytes, offset, bytes.length - offset);
+                    offset += numRead;
+                }
+                if (offset < bytes.length) {
+                    String errorMessage = String.format("File with name \"%s\" is too large", file.getName());
+                    LOGGER.error(errorMessage);
+                    throw new IOException(errorMessage);
+                }
                 return bytes;
             }
         }

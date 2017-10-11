@@ -4,7 +4,7 @@
     <title>Upload file</title>
 </head>
 <body>
-<form method="POST" enctype="multipart/form-data" action="upload">
+<form method="POST" enctype="multipart/form-data" action="api/products/{productId}/photos/">
         <label for="product-ud">Product id</label>
         <input id="product-id" type="number" name="productId"/>
         <label for="file">Photo</label>

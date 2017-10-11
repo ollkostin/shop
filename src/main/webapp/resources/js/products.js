@@ -20,7 +20,7 @@ function buildProductLink(product) {
 function buildImg(product) {
     let img = $('<img width="50" height="50"/>');
     img.prop('alt', 'product image');
-    img.prop('src', 'product/' + product['id'] + '/' + product['pathToPhoto']);
+    img.prop('src', 'api/products/' + product['id'] + '/photos/' + product['pathToPhoto']);
     return img;
 }
 

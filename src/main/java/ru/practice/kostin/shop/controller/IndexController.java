@@ -15,4 +15,9 @@ public class IndexController {
     public String products() {
         return "products";
     }
+
+    @GetMapping("/upload")
+    public String uploadForm() {
+        return "upload-form";
+    }
 }

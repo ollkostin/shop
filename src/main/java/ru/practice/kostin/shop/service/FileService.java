@@ -9,9 +9,9 @@ import ru.practice.kostin.shop.exception.FileTooLargeException;
 import ru.practice.kostin.shop.exception.UnsupportedExtensionException;
 import ru.practice.kostin.shop.util.FileUtil;
 
-import java.io.File;
 import java.io.IOException;
 
+import static ru.practice.kostin.shop.util.FileUtil.FILE_SEPARATOR;
 import static ru.practice.kostin.shop.util.PhotoFileUtil.isImageExtension;
 import static ru.practice.kostin.shop.util.PhotoFileUtil.isSizeAllowed;
 
@@ -40,23 +40,14 @@ public class FileService {
         if (isSizeAllowed(multipartFile) && isImageExtension(fileExtension)) {
             return FileUtil.write(
                     multipartFile,
-                    FileUtil.generateName(
-                            filePrefix,
-                            String.format("%s_%s", String.valueOf(productId),
-                                    String.valueOf(multipartFile.hashCode()))),
-                    String.format("%s%s%s%s", fileDirectoryPath, File.separator, filePrefix, productId));
+                    filePrefix + productId + "_" + multipartFile.hashCode(),
+                    fileDirectoryPath + FILE_SEPARATOR + filePrefix + productId
+            );
         }
         return null;
     }
 
-    public byte[] getFile(Integer id, String filename) throws IOException {
-        return FileUtil.getFile(
-                String.format(
-                        "%s%s%s%s%s",
-                        fileDirectoryPath,
-                        File.separator,
-                        filePrefix + String.valueOf(id),
-                        File.separator,
-                        filename));
+    public byte[] getFile(Integer id, String filename) throws IOException, FileTooLargeException {
+        return FileUtil.getFile(fileDirectoryPath + FILE_SEPARATOR + filePrefix + id + FILE_SEPARATOR + filename);
     }
 }

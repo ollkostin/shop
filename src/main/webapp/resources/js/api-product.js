@@ -13,7 +13,7 @@ function getProducts(page, size, success, error) {
 
     $.ajax({
         type: 'GET',
-        url: 'api/product/' + options,
+        url: 'api/products/' + options,
         success: function (response) {
             success(response);
             currentPage = page;
@@ -26,7 +26,7 @@ function getProducts(page, size, success, error) {
 function getProduct(id, success , error) {
     $.ajax({
         type: 'GET',
-        url: 'api/product/' + id,
+        url: 'api/products/' + id,
         success: success,
         error: error
     });
