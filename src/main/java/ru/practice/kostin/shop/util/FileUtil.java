@@ -72,25 +72,18 @@ public class FileUtil {
         File file = new File(pathToFile);
         if (file.exists()) {
             try (FileInputStream is = new FileInputStream(file);
-            BufferedInputStream bis = new BufferedInputStream(is)) {
+                 BufferedInputStream bis = new BufferedInputStream(is);
+                 ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
                 if (file.length() > Integer.MAX_VALUE) {
-                    String errorMessage = String.format("File with name \"%s\" is too large",file.getName());
+                    String errorMessage = String.format("File with name \"%s\" is too large", file.getName());
                     LOGGER.error(errorMessage);
                     throw new FileTooLargeException(errorMessage);
                 }
                 byte[] bytes = new byte[(int) file.length()];
-                int offset = 0;
-                int numRead = 0;
-                while (numRead != -1) {
-                    numRead = bis.read(bytes, offset, bytes.length - offset);
-                    offset += numRead;
+                while (bis.read(bytes) != -1) {
+                    outputStream.write(bytes);
                 }
-                if (offset < bytes.length) {
-                    String errorMessage = String.format("File with name \"%s\" is too large", file.getName());
-                    LOGGER.error(errorMessage);
-                    throw new IOException(errorMessage);
-                }
-                return bytes;
+                return outputStream.toByteArray();
             }
         }
         return null;
