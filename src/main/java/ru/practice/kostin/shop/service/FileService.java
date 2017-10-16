@@ -3,13 +3,17 @@ package ru.practice.kostin.shop.service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import ru.practice.kostin.shop.exception.FileTooLargeException;
 import ru.practice.kostin.shop.exception.UnsupportedExtensionException;
 import ru.practice.kostin.shop.util.FileUtil;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
 
 import static ru.practice.kostin.shop.util.FileUtil.FILE_SEPARATOR;
 import static ru.practice.kostin.shop.util.PhotoFileUtil.isImageExtension;
@@ -24,6 +28,8 @@ public class FileService {
     private String fileDirectoryPath;
     @Value("${shop.image.prefix}")
     private String filePrefix;
+    @Value("${shop.image.placeholder-name}")
+    private String placeholderName;
 
     /**
      * Saves image
@@ -47,7 +53,34 @@ public class FileService {
         return null;
     }
 
-    public byte[] getFile(Integer id, String filename) throws IOException, FileTooLargeException {
-        return FileUtil.getFile(fileDirectoryPath + FILE_SEPARATOR + filePrefix + id + FILE_SEPARATOR + filename);
+    /**
+     * Gets file from file system
+     *
+     * @param file         file
+     * @param outputStream response output stream
+     * @throws IOException
+     */
+    public void readFileToOutputStream(File file, OutputStream outputStream) throws IOException {
+        FileUtil.readFileToOutputStream(file, outputStream);
+    }
+
+    /**
+     * Sets content type, disposition and length into response headers
+     *
+     * @param file     file
+     * @param response http response
+     */
+    public void setResponseContentImageHeaders(File file, HttpServletResponse response) {
+        response.setHeader(HttpHeaders.CONTENT_TYPE, "image/jpeg");
+        response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getName() + ".jpg\"");
+        response.setHeader(HttpHeaders.CONTENT_LENGTH, String.valueOf(file.length()));
+    }
+
+    public File getFileByProductIdAndFilename(Integer productId, String filename) {
+        return new File(fileDirectoryPath + FILE_SEPARATOR + filePrefix + productId + FILE_SEPARATOR + filename);
+    }
+
+    public File getPlaceholderImage() {
+        return new File(fileDirectoryPath + FILE_SEPARATOR + placeholderName);
     }
 }

@@ -3,7 +3,6 @@ package ru.practice.kostin.shop.util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.multipart.MultipartFile;
-import ru.practice.kostin.shop.exception.FileTooLargeException;
 
 import java.io.*;
 import java.nio.file.FileAlreadyExistsException;
@@ -62,32 +61,20 @@ public class FileUtil {
     }
 
     /**
-     * Reads file by path
+     * Reads file into output stream
      *
-     * @param pathToFile path to file
+     * @param file file
+     * @param outputStream output stream
      * @return file in bytes
      * @throws IOException
      */
-    public static byte[] getFile(String pathToFile) throws IOException, FileTooLargeException {
-        File file = new File(pathToFile);
-        if (file.exists()) {
-            try (FileInputStream is = new FileInputStream(file);
-                 BufferedInputStream bis = new BufferedInputStream(is);
-                 ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
-                if (file.length() > Integer.MAX_VALUE) {
-                    String errorMessage = String.format("File with name \"%s\" is too large", file.getName());
-                    LOGGER.error(errorMessage);
-                    throw new FileTooLargeException(errorMessage);
-                }
-                byte[] bytes = new byte[(int) file.length()];
-                while (bis.read(bytes) != -1) {
-                    outputStream.write(bytes);
-                }
-                return outputStream.toByteArray();
+    public static void readFileToOutputStream(File file, OutputStream outputStream) throws IOException {
+        try (FileInputStream is = new FileInputStream(file);
+            BufferedInputStream bis = new BufferedInputStream(is)) {
+            int b;
+            while ((b = bis.read()) != -1) {
+                outputStream.write(b);
             }
         }
-        return null;
     }
-
-
 }
