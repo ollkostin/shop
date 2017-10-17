@@ -9,7 +9,9 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.practice.kostin.shop.exception.UnsupportedExtensionException;
 import ru.practice.kostin.shop.service.dto.error.ErrorDTO;
 
+import javax.servlet.http.HttpServletResponse;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 
 @ControllerAdvice
 @RestController
@@ -35,7 +37,7 @@ public class ControllerExceptionHandler {
 
     @ExceptionHandler(FileNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorDTO fileNotFoundException(FileNotFoundException ex) {
-        return new ErrorDTO("404", ex.getMessage());
+    public void fileNotFoundException(HttpServletResponse response) throws IOException {
+        response.sendError(HttpStatus.NOT_FOUND.value());
     }
 }

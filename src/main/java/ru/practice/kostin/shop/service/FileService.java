@@ -13,7 +13,6 @@ import ru.practice.kostin.shop.util.FileUtil;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
-import java.io.OutputStream;
 
 import static ru.practice.kostin.shop.util.FileUtil.FILE_SEPARATOR;
 import static ru.practice.kostin.shop.util.PhotoFileUtil.isImageExtension;
@@ -56,12 +55,12 @@ public class FileService {
     /**
      * Gets file from file system
      *
-     * @param file         file
-     * @param outputStream response output stream
+     * @param file     file
+     * @param response http response
      * @throws IOException
      */
-    public void readFileToOutputStream(File file, OutputStream outputStream) throws IOException {
-        FileUtil.readFileToOutputStream(file, outputStream);
+    public void readFileIntoResponse(File file, HttpServletResponse response) throws IOException {
+        FileUtil.readFileIntoResponse(file, response);
     }
 
     /**

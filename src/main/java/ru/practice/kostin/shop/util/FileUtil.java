@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.nio.file.FileAlreadyExistsException;
 
@@ -63,17 +64,18 @@ public class FileUtil {
     /**
      * Reads file into output stream
      *
-     * @param file file
-     * @param outputStream output stream
+     * @param file     file
+     * @param response http response
      * @return file in bytes
      * @throws IOException
      */
-    public static void readFileToOutputStream(File file, OutputStream outputStream) throws IOException {
+    public static void readFileIntoResponse(File file, HttpServletResponse response) throws IOException {
         try (FileInputStream is = new FileInputStream(file);
-            BufferedInputStream bis = new BufferedInputStream(is)) {
+             BufferedInputStream bis = new BufferedInputStream(is);
+             OutputStream os = response.getOutputStream()) {
             int b;
             while ((b = bis.read()) != -1) {
-                outputStream.write(b);
+                os.write(b);
             }
         }
     }
