@@ -9,6 +9,7 @@
 </head>
 <body>
 <div class="container">
+    <#include "resources/ftl/navbar.ftl">
     <h1>Products</h1>
     <select id="size-select"
             onchange="onSizeChange()">

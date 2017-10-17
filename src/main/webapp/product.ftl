@@ -9,16 +9,27 @@
 </head>
 <body>
 <div class="container">
+    <#include "resources/ftl/navbar.ftl">
     <div class="panel panel-default">
-        <div class="col-xs-12 col-sm-6 col-md-6">
-            <div id="product-photos"></div>
+        <div id="image-carousel" class="col-xs-12 col-sm-6 col-md-6 carousel slide" data-ride="carousel">
+            <div id="product-photos" class="carousel-inner"></div>
+            <a id="carousel-prev" class="left carousel-control" href="#image-carousel" data-slide="prev">
+                <span class="glyphicon glyphicon-chevron-left"></span>
+                <span class="sr-only">Previous</span>
+            </a>
+            <a id="carousel-next" class="right carousel-control" href="#image-carousel" data-slide="next">
+                <span class="glyphicon glyphicon-chevron-right"></span>
+                <span class="sr-only">Next</span>
+            </a>
         </div>
         <div id="product-info" class="col-xs-12 col-sm-6 col-md-6">
             <h2 id="product-name"></h2>
             <span>
-                <label for="product-price">Price:</label>
-                <p id="product-price"></p>
+                <label for="product-price">Price:<span id="product-price"></span></label>
             </span>
+            <div>
+                <p id="product-description"></p>
+            </div>
         </div>
     </div>
 </div>
