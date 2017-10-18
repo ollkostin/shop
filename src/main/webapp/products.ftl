@@ -1,14 +1,15 @@
-<!DOCTYPE html>
+<#import "spring.ftl" as spring />
 <html lang="en">
 <head>
     <title>Product list</title>
     <#include "resources/ftl/head.ftl">
-    <script src="resources/js/common.js"></script>
-    <script src="resources/js/api-product.js"></script>
-    <script src="resources/js/products.js"></script>
+    <script src="<@spring.url '/resources/js/common.js'/>"></script>
+    <script src="<@spring.url '/resources/js/api-product.js'/>"></script>
+    <script src="<@spring.url '/resources/js/products.js'/>"></script>
 </head>
 <body>
 <div class="container">
+    <#include "resources/ftl/navbar.ftl">
     <h1>Products</h1>
     <select id="size-select"
             onchange="onSizeChange()">
