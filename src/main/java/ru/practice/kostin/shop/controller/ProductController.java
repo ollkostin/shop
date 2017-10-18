@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.practice.kostin.shop.service.ProductService;
-import ru.practice.kostin.shop.service.dto.product.ProductFullDTO;
 import ru.practice.kostin.shop.service.dto.product.ProductShortDTO;
 
 import java.util.List;
@@ -18,7 +17,7 @@ import java.util.List;
 import static org.springframework.http.ResponseEntity.ok;
 
 @RestController
-@RequestMapping("/product")
+@RequestMapping("/api/products")
 public class ProductController {
 
     private ProductService productService;
@@ -45,8 +44,7 @@ public class ProductController {
      */
     @GetMapping("/{id}")
     public ResponseEntity getProduct(@PathVariable("id") Integer productId) throws NotFoundException {
-        ProductFullDTO product = productService.getProduct(productId);
-        return ok(product);
+        return ok(productService.getProduct(productId));
     }
 
     @Autowired
