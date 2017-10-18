@@ -9,6 +9,7 @@ import ru.practice.kostin.shop.persistence.entity.UserEntity;
 import ru.practice.kostin.shop.persistence.repository.RoleRepository;
 import ru.practice.kostin.shop.persistence.repository.UserRepository;
 
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 
 @Service
@@ -17,11 +18,11 @@ public class UserService {
     private RoleRepository roleRepository;
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
-
+    @Transactional
     public UserEntity createUser(String email, String password) throws UserAlreadyExistsException {
         UserEntity user = userRepository.findOneByEmail(email);
         if (user != null) {
-            throw new UserAlreadyExistsException("user with email " + email + "already exists");
+            throw new UserAlreadyExistsException("user with email " + email + " already exists");
         }
         user = new UserEntity();
         user.setEmail(email);

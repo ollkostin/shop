@@ -8,11 +8,14 @@ import org.springframework.stereotype.Service;
 import ru.practice.kostin.shop.persistence.entity.UserEntity;
 import ru.practice.kostin.shop.service.UserService;
 
+import javax.transaction.Transactional;
+
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
     private UserService userService;
 
     @Override
+    @Transactional
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
         UserEntity user = userService.getUserByEmail(s);
         if (user == null) {
