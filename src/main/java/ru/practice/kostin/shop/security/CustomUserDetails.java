@@ -1,12 +1,8 @@
 package ru.practice.kostin.shop.security;
 
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import ru.practice.kostin.shop.persistence.entity.RoleEntity;
-import ru.practice.kostin.shop.persistence.entity.UserEntity;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -16,14 +12,11 @@ public class CustomUserDetails implements UserDetails {
     private String passwordHash;
     private List<GrantedAuthority> roles;
 
-    public CustomUserDetails(UserEntity user) {
-        this.id = user.getId();
-        this.email = user.getEmail();
-        this.passwordHash = user.getPasswordHash();
-        this.roles = new ArrayList<>();
-        for (RoleEntity roleEntity : user.getRoles()){
-            this.roles.add(new SimpleGrantedAuthority(roleEntity.getName().name()));
-        }
+    public CustomUserDetails(Integer id, String email, String passwordHash, List<GrantedAuthority> roles) {
+        this.id = id;
+        this.email = email;
+        this.passwordHash = passwordHash;
+        this.roles = roles;
     }
 
     @Override
