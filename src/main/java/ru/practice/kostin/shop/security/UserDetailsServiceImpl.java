@@ -11,6 +11,7 @@ import ru.practice.kostin.shop.persistence.entity.RoleEntity;
 import ru.practice.kostin.shop.persistence.entity.UserEntity;
 import ru.practice.kostin.shop.service.UserService;
 
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,6 +20,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     private UserService userService;
 
     @Override
+    @Transactional
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
         UserEntity user = userService.getUserByEmail(s);
         if (user == null) {
