@@ -3,6 +3,7 @@ package ru.practice.kostin.shop.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import ru.practice.kostin.shop.exception.PasswordMismatchException;
 import ru.practice.kostin.shop.exception.UserAlreadyExistsException;
 import ru.practice.kostin.shop.persistence.entity.RoleName;
 import ru.practice.kostin.shop.persistence.entity.UserEntity;
@@ -19,10 +20,13 @@ public class UserService {
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Transactional
-    public UserEntity createUser(String email, String password) throws UserAlreadyExistsException {
+    public UserEntity createUser(String email, String password, String confirmPassword) throws UserAlreadyExistsException, PasswordMismatchException {
         UserEntity user = userRepository.findOneByEmail(email);
         if (user != null) {
             throw new UserAlreadyExistsException("user with email " + email + " already exists");
+        }
+        if (!password.equals(confirmPassword)) {
+            throw new PasswordMismatchException("password mismatch");
         }
         user = new UserEntity();
         user.setEmail(email);

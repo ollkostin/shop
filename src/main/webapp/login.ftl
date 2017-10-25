@@ -16,6 +16,9 @@
             <div class="form-actions">
                 <button type="submit" class="btn">Log in</button>
             </div>
+            <#if RequestParameters["error"]??>
+                <p>The email or password you have entered is invalid, try again.</p>
+            </#if>
         </fieldset>
     </form>
     <a href="register"> register </a>
