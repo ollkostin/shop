@@ -8,12 +8,12 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="products">Products</a>
+            <a class="navbar-brand" href="<@spring.url '/products'/>">Products</a>
         </div>
 
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav">
-                <li><a href="cart">Cart</a></li>
+                <li><a href="<@spring.url '/cart'/>">Cart</a></li>
             </ul>
             <#--<ul class="navbar-form navbar-left">-->
             <#--</ul>-->

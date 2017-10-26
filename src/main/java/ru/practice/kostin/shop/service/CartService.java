@@ -11,6 +11,7 @@ import ru.practice.kostin.shop.persistence.repository.CartRepository;
 import ru.practice.kostin.shop.persistence.repository.ProductRepository;
 import ru.practice.kostin.shop.service.dto.product.ProductShortDTO;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -19,6 +20,7 @@ public class CartService {
     private CartRepository cartRepository;
     private ProductRepository productRepository;
 
+    @Transactional
     public List<ProductShortDTO> getProductsInCart(Integer userId) {
         List<CartEntity> cart = getCart(userId);
         return cart
@@ -27,6 +29,7 @@ public class CartService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     public void addProductToCart(Integer productId, Integer userId) throws NotFoundException {
         ProductEntity productEntity = productRepository.findOne(productId);
         if (productEntity == null) {
@@ -46,6 +49,7 @@ public class CartService {
         cartRepository.save(cart);
     }
 
+    @Transactional
     public void removeProductFromCart(Integer productId, Integer userId) throws NotAllowedException {
         CartId cartId = new CartId(userId, productId);
         CartEntity cart = cartRepository.findOne(cartId);
@@ -61,6 +65,7 @@ public class CartService {
         }
     }
 
+    @Transactional
     public void clearCart(Integer userId) {
         cartRepository.delete(getCart(userId));
     }

@@ -21,7 +21,7 @@
             ${error}
         </#if>
     </fieldset>
-    <a href="login"> login </a>
+    <a href="<@spring.url '/login'/>"> login </a>
 </form>
 </body>
 </html>

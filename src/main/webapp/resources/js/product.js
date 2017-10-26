@@ -8,7 +8,6 @@ function onSuccessLoadProduct(product) {
     $('#product-description').text(product['description']);
     $('#product-price').text(product['price']);
     $('#product-photos').append(buildProductPhotosBlock(product));
-    $('#product-info').append(cartButton());
 }
 
 
@@ -36,4 +35,17 @@ function buildCarouselItem(img ,index) {
     }
     div.append(img);
     return div;
+}
+
+function productPageCartButton() {
+    $.ajax({
+        type: 'PUT',
+        url: '../api/cart/product/' + productId,
+        success:  function (resp) {
+            alert('Add product');
+        },
+        error: function (resp) {
+            alert(resp.responseJSON.message);
+        }
+    });
 }

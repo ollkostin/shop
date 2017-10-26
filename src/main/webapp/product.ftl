@@ -6,6 +6,7 @@
     <script src="<@spring.url '/resources/js/common.js'/>"></script>
     <script src="<@spring.url '/resources/js/api-product.js'/>"></script>
     <script src="<@spring.url '/resources/js/product.js'/>"></script>
+    <script src="<@spring.url '/resources/js/api-cart.js'/>"></script>
 </head>
 <body>
 <div class="container">
@@ -29,6 +30,7 @@
             </span>
             <div>
                 <p id="product-description"></p>
+                <button class="btn btn-success" onclick="productPageCartButton()">Add to cart</button>
             </div>
         </div>
     </div>
