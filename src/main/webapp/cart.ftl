@@ -29,7 +29,7 @@
             <h4>Total price:</h4>
             <p id="total-price"></p>
             <div class="btn-group">
-                <button class="btn btn-primary">Create order</button>
+                <a class="btn btn-primary" href="<@spring.url '/order'/>">Create order</a>
                 <button class="btn btn-danger" onclick="onClickClearCart()">Clear cart</button>
             </div>
         </div>
