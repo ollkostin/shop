@@ -6,6 +6,7 @@
     <script src="<@spring.url '/resources/js/common.js'/>"></script>
     <script src="<@spring.url '/resources/js/api-product.js'/>"></script>
     <script src="<@spring.url '/resources/js/products.js'/>"></script>
+    <script src="<@spring.url '/resources/js/api-cart.js'/>"></script>
 </head>
 <body>
 <div class="container">
@@ -20,7 +21,8 @@
     <table class="table">
         <thead>
         <tr>
-            <th></th>
+            <td>id</td>
+            <td>image</td>
             <td>Product name</td>
             <td>Price</td>
         </tr>

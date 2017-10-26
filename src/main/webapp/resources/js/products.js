@@ -5,6 +5,7 @@ function showProducts(productList) {
     clearChildNodes(products);
     productList.forEach(product => {
         let tr = $('<tr></tr>');
+        tr.append(buildTableData(product['id']));
         tr.append(
             buildTableData(
                 buildImg('api/products/' + product['id'] + '/photos/' + product['pathToPhoto'], 50, 50)
@@ -15,10 +16,6 @@ function showProducts(productList) {
         tr.append(buildTableData(cartButton()));
         products.append(tr);
     });
-}
-
-function buildProductLink(product) {
-    return $('<a href="products/' + product['id'] + '">' + product['name'] + '</a>');
 }
 
 

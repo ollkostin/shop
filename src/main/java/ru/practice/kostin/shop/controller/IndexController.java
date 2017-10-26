@@ -26,4 +26,9 @@ public class IndexController {
     public String product(@PathVariable("productId") Integer productId) {
         return "product";
     }
+
+    @GetMapping("/cart")
+    public String cart(){
+        return "cart";
+    }
 }

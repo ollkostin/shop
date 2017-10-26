@@ -25,6 +25,16 @@ function buildImg(pathToPhoto, width, height) {
     return img;
 }
 
-function addToCart(e) {
-    console.log('not implemented yet');
+function addToCart() {
+    let currentRow = $(this).closest("tr");
+    let productId = currentRow.find("td:eq(0)").text();
+    addProductToCart(productId, function (resp) {
+        alert('Add product');
+    }, function (resp) {
+        alert(resp.responseJSON.message);
+    })
+}
+
+function buildProductLink(product) {
+    return $('<a href="products/' + product['id'] + '">' + product['name'] + '</a>');
 }
