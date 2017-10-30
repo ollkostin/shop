@@ -1,6 +1,8 @@
 package ru.practice.kostin.shop.controller;
 
 import javassist.NotFoundException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -18,6 +20,8 @@ import java.io.IOException;
 @RestController
 public class ControllerExceptionHandler {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(ControllerExceptionHandler.class);
+
     @ExceptionHandler(NotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorDTO notFoundException(NotFoundException ex) {
@@ -27,6 +31,7 @@ public class ControllerExceptionHandler {
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorDTO internalServerException(Exception ex) {
+        LOGGER.error(ex.getMessage());
         return new ErrorDTO("500", ex.getMessage());
     }
 

@@ -3,6 +3,7 @@ package ru.practice.kostin.shop.persistence.entity;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.sql.Date;
+import java.util.List;
 
 
 @Entity
@@ -16,6 +17,8 @@ public class OrderEntity {
     private BigDecimal totalPrice;
     @ManyToOne
     private UserEntity user;
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+    private List<OrderDetailsEntity> orderDetails;
 
     public Integer getId() {
         return id;
@@ -55,6 +58,14 @@ public class OrderEntity {
 
     public void setUser(UserEntity user) {
         this.user = user;
+    }
+
+    public List<OrderDetailsEntity> getOrderDetails() {
+        return orderDetails;
+    }
+
+    public void setOrderDetails(List<OrderDetailsEntity> orderDetails) {
+        this.orderDetails = orderDetails;
     }
 
     @Override

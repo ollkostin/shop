@@ -2,8 +2,9 @@ package ru.practice.kostin.shop.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.practice.kostin.shop.persistence.entity.OrderEntity;
-import ru.practice.kostin.shop.persistence.entity.UserEntity;
+import ru.practice.kostin.shop.persistence.entity.*;
+import ru.practice.kostin.shop.persistence.repository.CartRepository;
+import ru.practice.kostin.shop.persistence.repository.OrderDetailsRepository;
 import ru.practice.kostin.shop.persistence.repository.OrderRepository;
 import ru.practice.kostin.shop.persistence.repository.UserRepository;
 import ru.practice.kostin.shop.service.dto.OrderDto;
@@ -12,11 +13,16 @@ import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class OrderService {
     private final int ADDRESS_LENGTH = 300;
+
+    private CartService cartService;
     private OrderRepository orderRepository;
+    private OrderDetailsRepository orderDetailsRepository;
     private UserRepository userRepository;
 
     @Transactional
@@ -26,13 +32,27 @@ public class OrderService {
         }
         UserEntity userEntity = userRepository.findOne(userId);
 
-        OrderEntity orderEntity = new OrderEntity();
-        orderEntity.setDate(Date.valueOf(LocalDate.now()));
-        orderEntity.setAddress(orderDto.getAddress());
-        orderEntity.setTotalPrice(BigDecimal.valueOf(orderDto.getTotalPrice()));
-        orderEntity.setUser(userEntity);
-        //TODO: очистить корзину, записать информацию о заказе
-        orderRepository.save(orderEntity);
+        OrderEntity order = new OrderEntity();
+        order.setDate(Date.valueOf(LocalDate.now()));
+        order.setAddress(orderDto.getAddress());
+        order.setTotalPrice(BigDecimal.valueOf(orderDto.getTotalPrice()));
+        order.setUser(userEntity);
+        orderRepository.save(order);
+
+        List<CartEntity> cartEntityList = cartService.getCart(userId);
+
+        List<OrderDetailsEntity> orderDetailsList  = new ArrayList<>();
+        for (CartEntity productInCart : cartEntityList) {
+            OrderDetailsEntity orderDetails = new OrderDetailsEntity();
+
+            orderDetails.setCount(productInCart.getCount());
+            orderDetails.setProduct(productInCart.getProduct());
+            orderDetails.setOrder(order);
+
+            orderDetailsList.add(orderDetails);
+        }
+
+        orderDetailsRepository.save(orderDetailsList);
     }
 
     @Autowired
@@ -43,5 +63,15 @@ public class OrderService {
     @Autowired
     public void setUserRepository(UserRepository userRepository) {
         this.userRepository = userRepository;
+    }
+
+    @Autowired
+    public void setCartService(CartService cartService) {
+        this.cartService = cartService;
+    }
+
+    @Autowired
+    public void setOrderDetailsRepository(OrderDetailsRepository orderDetailsRepository) {
+        this.orderDetailsRepository = orderDetailsRepository;
     }
 }

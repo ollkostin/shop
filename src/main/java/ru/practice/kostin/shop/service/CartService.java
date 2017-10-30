@@ -69,7 +69,8 @@ public class CartService {
         cartRepository.delete(getCart(userId));
     }
 
-    private List<CartEntity> getCart(Integer userId) {
+    @Transactional
+    public List<CartEntity> getCart(Integer userId) {
         return cartRepository.findAll((root, query, cb) -> {
             root.join("id");
             return cb.equal(root.get("id").get("userId"), userId);
