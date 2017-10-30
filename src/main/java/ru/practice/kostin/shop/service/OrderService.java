@@ -11,7 +11,6 @@ import ru.practice.kostin.shop.service.dto.OrderDto;
 import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.sql.Date;
-import java.time.Instant;
 import java.time.LocalDate;
 
 @Service
@@ -21,7 +20,7 @@ public class OrderService {
     private UserRepository userRepository;
 
     @Transactional
-    public void createOrder(Integer userId, OrderDto orderDto) {
+    public void createOrder(Integer userId, OrderDto orderDto) throws IllegalArgumentException {
         if (orderDto.getAddress().isEmpty() || orderDto.getAddress().length() > ADDRESS_LENGTH) {
             throw new IllegalArgumentException("address field is wrong");
         }

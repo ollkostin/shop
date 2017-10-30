@@ -10,8 +10,8 @@ import java.nio.file.FileAlreadyExistsException;
 
 public class FileUtil {
 
-    private static final int BUFFER_SIZE = 16384;
     public static final String FILE_SEPARATOR = "/";
+    private static final int BUFFER_SIZE = 16384;
     private static final Logger LOGGER = LoggerFactory.getLogger(FileUtil.class);
 
     /**
@@ -27,7 +27,9 @@ public class FileUtil {
         LOGGER.info(String.format("Writing file with name \"%s\" in directory \"%s\" ", name, fileDirectoryPath));
         File directory = new File(fileDirectoryPath);
         if (!directory.exists()) {
-            directory.mkdir();
+            if (!directory.mkdir()) {
+                throw new IOException("cannot not create file");
+            }
         }
         File file = new File(directory, name);
         boolean created = file.createNewFile();
@@ -41,11 +43,10 @@ public class FileUtil {
             }
             LOGGER.info(String.format("Successfully saved file with name \"%s\" in directory \"%s\" ", name, fileDirectoryPath));
             return file.getPath();
-        } else {
-            String errorMessage = String.format("File with name \"%s\" already exists in directory \"%s\"", name, fileDirectoryPath);
-            LOGGER.error(errorMessage);
-            throw new FileAlreadyExistsException(errorMessage);
         }
+        String errorMessage = String.format("File with name \"%s\" already exists in directory \"%s\"", name, fileDirectoryPath);
+        LOGGER.error(errorMessage);
+        throw new FileAlreadyExistsException(errorMessage);
     }
 
     /**
@@ -55,10 +56,10 @@ public class FileUtil {
      * @return extension
      */
     public static String getFileExtension(String fileName) {
-        if (fileName.lastIndexOf(".") != -1
-                && fileName.lastIndexOf(".") != 0)
+        if (fileName.lastIndexOf(".") > 0) {
             return fileName.substring(fileName.lastIndexOf(".") + 1);
-        else return "";
+        }
+        return "";
     }
 
     /**

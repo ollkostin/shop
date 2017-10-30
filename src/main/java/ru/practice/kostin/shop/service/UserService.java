@@ -11,7 +11,7 @@ import ru.practice.kostin.shop.persistence.repository.RoleRepository;
 import ru.practice.kostin.shop.persistence.repository.UserRepository;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
+import java.util.Collections;
 
 @Service
 public class UserService {
@@ -31,8 +31,7 @@ public class UserService {
         user = new UserEntity();
         user.setEmail(email);
         user.setPasswordHash(bCryptPasswordEncoder.encode(password));
-        user.setRoles(new ArrayList<>());
-        user.getRoles().add(roleRepository.findByName(RoleName.ROLE_USER));
+        user.setRoles(Collections.singletonList(roleRepository.findByName(RoleName.ROLE_USER)));
         return userRepository.save(user);
     }
 

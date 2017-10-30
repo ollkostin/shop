@@ -9,10 +9,11 @@ import ru.practice.kostin.shop.persistence.entity.CartId;
 import ru.practice.kostin.shop.persistence.entity.ProductEntity;
 import ru.practice.kostin.shop.persistence.repository.CartRepository;
 import ru.practice.kostin.shop.persistence.repository.ProductRepository;
-import ru.practice.kostin.shop.service.dto.product.ProductShortDTO;
+import ru.practice.kostin.shop.service.dto.product.ProductInCartDTO;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -21,11 +22,11 @@ public class CartService {
     private ProductRepository productRepository;
 
     @Transactional
-    public List<ProductShortDTO> getProductsInCart(Integer userId) {
+    public List<ProductInCartDTO> getProductsInCart(Integer userId) {
         List<CartEntity> cart = getCart(userId);
         return cart
                 .stream()
-                .map(ProductShortDTO::new)
+                .map(ProductInCartDTO::new)
                 .collect(Collectors.toList());
     }
 
@@ -41,11 +42,9 @@ public class CartService {
             cart = new CartEntity();
             cart.setId(cartId);
             cart.setProduct(productEntity);
-            cart.setCount(1);
-        } else {
-            int count = cart.getCount();
-            cart.setCount(count + 1);
         }
+        Integer count = Optional.ofNullable(cart.getCount()).orElse(0);
+        cart.setCount(count + 1);
         cartRepository.save(cart);
     }
 

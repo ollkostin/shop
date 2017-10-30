@@ -16,7 +16,7 @@ public class OrderController {
     private OrderService orderService;
 
     @PostMapping("/")
-    public ResponseEntity createOrder(@ModelAttribute("order") OrderDto orderDto) {
+    public ResponseEntity createOrder(@ModelAttribute("order") OrderDto orderDto) throws IllegalArgumentException {
         CustomUserDetails user = (CustomUserDetails)
                 (SecurityContextHolder.getContext().getAuthentication().getPrincipal());
         orderService.createOrder(user.getId(), orderDto);
