@@ -17,7 +17,7 @@ public class OrderEntity {
     private BigDecimal totalPrice;
     @ManyToOne
     private UserEntity user;
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "order", cascade = CascadeType.PERSIST)
     private List<OrderDetailsEntity> orderDetails;
 
     public Integer getId() {

@@ -3,8 +3,6 @@ package ru.practice.kostin.shop.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.practice.kostin.shop.persistence.entity.*;
-import ru.practice.kostin.shop.persistence.repository.CartRepository;
-import ru.practice.kostin.shop.persistence.repository.OrderDetailsRepository;
 import ru.practice.kostin.shop.persistence.repository.OrderRepository;
 import ru.practice.kostin.shop.persistence.repository.UserRepository;
 import ru.practice.kostin.shop.service.dto.OrderDto;
@@ -22,7 +20,6 @@ public class OrderService {
 
     private CartService cartService;
     private OrderRepository orderRepository;
-    private OrderDetailsRepository orderDetailsRepository;
     private UserRepository userRepository;
 
     @Transactional
@@ -37,22 +34,19 @@ public class OrderService {
         order.setAddress(orderDto.getAddress());
         order.setTotalPrice(BigDecimal.valueOf(orderDto.getTotalPrice()));
         order.setUser(userEntity);
-        orderRepository.save(order);
 
         List<CartEntity> cartEntityList = cartService.getCart(userId);
-
         List<OrderDetailsEntity> orderDetailsList  = new ArrayList<>();
         for (CartEntity productInCart : cartEntityList) {
             OrderDetailsEntity orderDetails = new OrderDetailsEntity();
-
+            orderDetails.setId(new OrderDetailsId());
             orderDetails.setCount(productInCart.getCount());
             orderDetails.setProduct(productInCart.getProduct());
             orderDetails.setOrder(order);
-
             orderDetailsList.add(orderDetails);
         }
-
-        orderDetailsRepository.save(orderDetailsList);
+        order.setOrderDetails(orderDetailsList);
+        orderRepository.save(order);
     }
 
     @Autowired
@@ -68,10 +62,5 @@ public class OrderService {
     @Autowired
     public void setCartService(CartService cartService) {
         this.cartService = cartService;
-    }
-
-    @Autowired
-    public void setOrderDetailsRepository(OrderDetailsRepository orderDetailsRepository) {
-        this.orderDetailsRepository = orderDetailsRepository;
     }
 }

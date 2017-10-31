@@ -9,11 +9,11 @@ public class OrderDetailsEntity {
     private OrderDetailsId id;
     private Integer count;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @MapsId("orderId")
     private OrderEntity order;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @MapsId("productId")
     private ProductEntity product;
 
