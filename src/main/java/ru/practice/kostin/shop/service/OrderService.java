@@ -9,7 +9,8 @@ import ru.practice.kostin.shop.service.dto.OrderDto;
 
 import javax.transaction.Transactional;
 import java.math.BigDecimal;
-import java.sql.Date;
+import java.time.Instant;
+import java.util.Date;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,12 +26,12 @@ public class OrderService {
     @Transactional
     public Integer createOrder(Integer userId, OrderDto orderDto) throws IllegalArgumentException {
         if (orderDto.getAddress().isEmpty() || orderDto.getAddress().length() > ADDRESS_LENGTH) {
-            throw new IllegalArgumentException("address field is wrong");
+            throw new IllegalArgumentException("address field fulfilled wrong");
         }
         UserEntity userEntity = userRepository.findOne(userId);
 
         OrderEntity order = new OrderEntity();
-        order.setDate(Date.valueOf(LocalDate.now()));
+        order.setDate(Date.from(Instant.now()));
         order.setAddress(orderDto.getAddress());
         order.setTotalPrice(BigDecimal.valueOf(orderDto.getTotalPrice()));
         order.setUser(userEntity);
@@ -39,7 +40,6 @@ public class OrderService {
         List<OrderDetailsEntity> orderDetailsList  = new ArrayList<>();
         for (CartEntity productInCart : cartEntityList) {
             OrderDetailsEntity orderDetails = new OrderDetailsEntity();
-            orderDetails.setId(new OrderDetailsId());
             orderDetails.setCount(productInCart.getCount());
             orderDetails.setProduct(productInCart.getProduct());
             orderDetails.setOrder(order);

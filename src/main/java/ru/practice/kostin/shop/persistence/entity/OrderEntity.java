@@ -1,8 +1,10 @@
 package ru.practice.kostin.shop.persistence.entity;
 
+import org.hibernate.annotations.Formula;
+
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.sql.Date;
+import java.util.Date;
 import java.util.List;
 
 
@@ -12,6 +14,7 @@ public class OrderEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+    @Temporal(TemporalType.TIMESTAMP)
     private Date date;
     private String address;
     private BigDecimal totalPrice;

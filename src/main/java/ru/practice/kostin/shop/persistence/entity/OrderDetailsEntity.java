@@ -17,6 +17,10 @@ public class OrderDetailsEntity {
     @MapsId("productId")
     private ProductEntity product;
 
+    public OrderDetailsEntity(){
+        this.id = new OrderDetailsId();
+    }
+
     public OrderDetailsId getId() {
         return id;
     }

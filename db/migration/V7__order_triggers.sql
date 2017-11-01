@@ -23,13 +23,13 @@ $$
 DECLARE
   r        RECORD;
   result   DECIMAL := 0;
-  order_id INTEGER;
+  ord_id INTEGER;
 BEGIN
   IF TG_OP = 'DELETE'
   THEN
-    order_id := OLD.order_id;
+    ord_id := OLD.order_id;
   ELSE
-    order_id := NEW.order_id;
+    ord_id := NEW.order_id;
   END IF;
   FOR r IN SELECT
              p.price,
@@ -37,13 +37,13 @@ BEGIN
            FROM order_details od
              JOIN product p
                ON p.id = od.product_id
-           WHERE od.order_id = NEW.order_id
+           WHERE od.order_id = ord_id
   LOOP
     result := result + r.price * r.count;
   END LOOP;
   UPDATE "order"
   SET total_price = result
-  WHERE id = NEW.order_id;
+  WHERE id = ord_id;
   RETURN NULL ;
 END;
 $$
