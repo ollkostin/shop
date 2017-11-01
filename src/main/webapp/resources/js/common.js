@@ -1,3 +1,7 @@
+let alrearyInCartMsg = function () {
+    return $('<p>Already in cart</p>');
+};
+
 function buildTableData(value, mapper) {
     let td = $('<td></td>');
     if (mapper) {
@@ -12,8 +16,8 @@ function clearChildNodes(element) {
     element.empty()
 }
 
-function cartButton() {
-    let button = $('<button class="btn btn-success">Add to cart</button>');
+function cartButton(productId) {
+    let button = $('<button id="cart-btn-' + productId + '" class="btn btn-success">Add to cart</button>');
     button.click(addToCart);
     return button;
 }
@@ -29,10 +33,19 @@ function addToCart() {
     let currentRow = $(this).closest("tr");
     let productId = currentRow.find("td:eq(0)").text();
     addProductToCart(productId, function (resp) {
-        alert('Add product');
+        $('#cart-btn-' + productId).replaceWith(alrearyInCartMsg);
     }, function (resp) {
         alert(resp.responseJSON.message);
     })
+}
+
+function cartButtonOrAlreadyInCartMessage(productId) {
+    if (productListIds.includes(productId)) {
+        return alrearyInCartMsg;
+    }
+    else {
+        return cartButton(productId);
+    }
 }
 
 function buildProductLink(product) {

@@ -7,12 +7,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 @Controller
 public class IndexController {
 
-    @GetMapping("/")
-    public String index() {
-        return "index";
-    }
-
-    @GetMapping("/products")
+    @GetMapping(value = {"/", "/products"})
     public String products() {
         return "products";
     }

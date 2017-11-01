@@ -42,7 +42,7 @@ function productPageCartButton() {
         type: 'PUT',
         url: '../api/cart/product/' + productId,
         success:  function (resp) {
-            alert('Add product');
+            $('#cart-btn').replaceWith(alrearyInCartMsg);
         },
         error: function (resp) {
             alert(resp.responseJSON.message);

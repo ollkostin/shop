@@ -30,7 +30,7 @@
             </span>
             <div>
                 <p id="product-description"></p>
-                <button class="btn btn-success" onclick="productPageCartButton()">Add to cart</button>
+                <button id="cart-btn" class="btn btn-success" onclick="productPageCartButton()">Add to cart</button>
             </div>
         </div>
     </div>

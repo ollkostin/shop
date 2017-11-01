@@ -1,4 +1,13 @@
-getProducts(currentPage, currentSize, onSuccessLoadProducts);
+let productListIds = [];
+
+$(document).ready(function () {
+    getUserCart(function (productList) {
+        productList.forEach(product => {
+            productListIds.push(product['id']);
+        })
+    });
+    getProducts(currentPage, currentSize, onSuccessLoadProducts);
+});
 
 function showProducts(productList) {
     let products = $('#products');
@@ -13,7 +22,7 @@ function showProducts(productList) {
         );
         tr.append(buildTableData(buildProductLink(product)));
         tr.append(buildTableData(product['price']));
-        tr.append(buildTableData(cartButton()));
+        tr.append(buildTableData(cartButtonOrAlreadyInCartMessage(product['id'])));
         products.append(tr);
     });
 }
