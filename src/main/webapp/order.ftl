@@ -10,21 +10,14 @@
 <body>
 <div class="container">
 <#include "resources/ftl/navbar.ftl">
+<#if success??>
+    ${success}
+<#else>
+    <h1>Create order</h1>
     <div>
-        <h1>Create order</h1>
         <div id="cart">
-            <table class="table">
-                <thead>
-                <tr>
-                    <th>image</th>
-                    <td>Product name</td>
-                    <td>Price</td>
-                    <td>Count</td>
-                </tr>
-                </thead>
-                <tbody id="products"></tbody>
-            </table>
-            <form id="create-order" name="order" action="<@spring.url '/api/order/'/>" method="post">
+            <#include "resources/ftl/cart-table.ftl">
+            <form id="create-order" name="order" action="<@spring.url '/order'/>" method="post">
                 <div>
                     Total price:
                     <label>
@@ -37,9 +30,13 @@
                         <input type="text" name="address" value="" required/>
                     </label>
                 </div>
-                <button type="submit">Create order</button>
+                <button type="submit" class="btn btn-primary">Create order</button>
+                <#if error??>
+                ${error}
+                </#if>
             </form>
         </div>
     </div>
+</#if>
 </body>
 </html>

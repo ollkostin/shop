@@ -31,9 +31,4 @@ public class IndexController {
     public String cart() {
         return "cart";
     }
-
-    @GetMapping("/order")
-    public String order() {
-        return "order";
-    }
 }

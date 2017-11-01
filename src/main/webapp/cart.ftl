@@ -13,18 +13,7 @@
     <h1>Your cart</h1>
     <div id="empty-cart"> Cart is empty</div>
     <div id="cart">
-        <table class="table">
-            <thead>
-            <tr>
-                <th>id</th>
-                <th>image</th>
-                <td>Product name</td>
-                <td>Price</td>
-                <td>Count</td>
-            </tr>
-            </thead>
-            <tbody id="products"></tbody>
-        </table>
+        <#include "resources/ftl/cart-table.ftl">
         <div class="text-right">
             <h4>Total price:</h4>
             <p id="total-price"></p>

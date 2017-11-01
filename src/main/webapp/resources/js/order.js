@@ -10,6 +10,7 @@ function showCart(productList) {
     let products = $('#products');
     productList.forEach(product => {
         let tr = $('<tr></tr>');
+        tr.append(buildTableData(product['id']));
         tr.append(
             buildTableData(
                 buildImg('api/products/' + product['id'] + '/photos/' + product['pathToPhoto'], 50, 50)

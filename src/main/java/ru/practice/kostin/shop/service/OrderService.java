@@ -23,7 +23,7 @@ public class OrderService {
     private UserRepository userRepository;
 
     @Transactional
-    public void createOrder(Integer userId, OrderDto orderDto) throws IllegalArgumentException {
+    public Integer createOrder(Integer userId, OrderDto orderDto) throws IllegalArgumentException {
         if (orderDto.getAddress().isEmpty() || orderDto.getAddress().length() > ADDRESS_LENGTH) {
             throw new IllegalArgumentException("address field is wrong");
         }
@@ -47,6 +47,7 @@ public class OrderService {
         }
         order.setOrderDetails(orderDetailsList);
         orderRepository.save(order);
+        return order.getId();
     }
 
     @Autowired
