@@ -33,7 +33,6 @@ public class OrderService {
         OrderEntity order = new OrderEntity();
         order.setDate(Date.from(Instant.now()));
         order.setAddress(orderDto.getAddress());
-        order.setTotalPrice(BigDecimal.valueOf(orderDto.getTotalPrice()));
         order.setUser(userEntity);
 
         List<CartEntity> cartEntityList = cartService.getCart(userId);
