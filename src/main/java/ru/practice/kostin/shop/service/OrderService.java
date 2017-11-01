@@ -2,17 +2,18 @@ package ru.practice.kostin.shop.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.practice.kostin.shop.persistence.entity.*;
+import ru.practice.kostin.shop.persistence.entity.CartEntity;
+import ru.practice.kostin.shop.persistence.entity.OrderDetailsEntity;
+import ru.practice.kostin.shop.persistence.entity.OrderEntity;
+import ru.practice.kostin.shop.persistence.entity.UserEntity;
 import ru.practice.kostin.shop.persistence.repository.OrderRepository;
 import ru.practice.kostin.shop.persistence.repository.UserRepository;
 import ru.practice.kostin.shop.service.dto.OrderDto;
 
 import javax.transaction.Transactional;
-import java.math.BigDecimal;
 import java.time.Instant;
-import java.util.Date;
-import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -23,6 +24,13 @@ public class OrderService {
     private OrderRepository orderRepository;
     private UserRepository userRepository;
 
+    /**
+     * Creates order for user
+     * @param userId user id
+     * @param orderDto order information
+     * @return order id
+     * @throws IllegalArgumentException
+     */
     @Transactional
     public Integer createOrder(Integer userId, OrderDto orderDto) throws IllegalArgumentException {
         if (orderDto.getAddress().isEmpty() || orderDto.getAddress().length() > ADDRESS_LENGTH) {

@@ -17,7 +17,7 @@
     <div>
         <div id="cart">
             <#include "resources/ftl/cart-table.ftl">
-            <form id="create-order" name="order" action="<@spring.url '/order'/>" method="post">
+            <form id="create-order" name="order" action="<@spring.url '/order/'/>" method="post">
                 <div>
                     Total price:
                     <label>

@@ -7,20 +7,22 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import ru.practice.kostin.shop.security.CustomUserDetails;
 import ru.practice.kostin.shop.service.OrderService;
 import ru.practice.kostin.shop.service.dto.OrderDto;
 
 @Controller
+@RequestMapping("/order")
 public class OrderController {
     private OrderService orderService;
 
-    @GetMapping("/order")
+    @GetMapping
     public String order() {
         return "order";
     }
 
-    @PostMapping("/order")
+    @PostMapping("/")
     public String createOrder(@ModelAttribute("order") OrderDto orderDto, Model model) {
         CustomUserDetails user = (CustomUserDetails)
                 (SecurityContextHolder.getContext().getAuthentication().getPrincipal());

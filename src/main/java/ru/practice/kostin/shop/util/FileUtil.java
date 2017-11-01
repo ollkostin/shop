@@ -42,7 +42,7 @@ public class FileUtil {
                 }
             }
             LOGGER.info(String.format("Successfully saved file with name \"%s\" in directory \"%s\" ", name, fileDirectoryPath));
-            return file.getPath();
+            return name;
         }
         String errorMessage = String.format("File with name \"%s\" already exists in directory \"%s\"", name, fileDirectoryPath);
         LOGGER.error(errorMessage);
