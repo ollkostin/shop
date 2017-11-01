@@ -8,4 +8,4 @@ CREATE TABLE order_details(
 );
 
 ALTER TABLE "order"
-    ADD COLUMN total_price DECIMAL NOT NULL DEFAULT 0 ;
+    ADD COLUMN total_price DECIMAL DEFAULT 0;
