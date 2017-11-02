@@ -4,7 +4,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 public class NewProductDTO extends ProductDTO {
     private String description;
-    private MultipartFile photo;
+    private MultipartFile[] photos;
 
     public String getDescription() {
         return description;
@@ -14,11 +14,11 @@ public class NewProductDTO extends ProductDTO {
         this.description = description;
     }
 
-    public MultipartFile getPhoto() {
-        return photo;
+    public MultipartFile[] getPhotos() {
+        return photos;
     }
 
-    public void setPhoto(MultipartFile photo) {
-        this.photo = photo;
+    public void setPhotos(MultipartFile[] photos) {
+        this.photos = photos;
     }
 }

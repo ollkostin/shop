@@ -6,8 +6,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import ru.practice.kostin.shop.exception.FileTooLargeException;
-import ru.practice.kostin.shop.exception.UnsupportedExtensionException;
 import ru.practice.kostin.shop.util.FileUtil;
 
 import javax.servlet.http.HttpServletResponse;
@@ -15,7 +13,7 @@ import java.io.File;
 import java.io.IOException;
 
 import static ru.practice.kostin.shop.util.FileUtil.FILE_SEPARATOR;
-import static ru.practice.kostin.shop.util.PhotoFileUtil.isImageExtension;
+import static ru.practice.kostin.shop.util.PhotoFileUtil.fileHasImageExtension;
 import static ru.practice.kostin.shop.util.PhotoFileUtil.isSizeAllowed;
 
 @Service
@@ -37,12 +35,9 @@ public class FileService {
      * @param productId     product id
      * @return path to file
      * @throws IOException
-     * @throws UnsupportedExtensionException not an image or extension is not supported
-     * @throws FileTooLargeException         size of file is not supported
      */
-    public String saveFile(MultipartFile multipartFile, Integer productId) throws IOException, UnsupportedExtensionException, FileTooLargeException {
-        String fileExtension = FileUtil.getFileExtension(multipartFile.getOriginalFilename());
-        if (isSizeAllowed(multipartFile) && isImageExtension(fileExtension)) {
+    public String saveFile(MultipartFile multipartFile, Integer productId) throws IOException {
+        if (isSizeAllowed(multipartFile) && fileHasImageExtension(multipartFile)) {
             return FileUtil.write(
                     multipartFile,
                     filePrefix + productId + "_" + multipartFile.hashCode(),

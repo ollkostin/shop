@@ -2,17 +2,17 @@ package ru.practice.kostin.shop.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import ru.practice.kostin.shop.exception.FileTooLargeException;
-import ru.practice.kostin.shop.exception.UnsupportedExtensionException;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import ru.practice.kostin.shop.service.CreateProductService;
 import ru.practice.kostin.shop.service.dto.product.NewProductDTO;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
 
 @Controller
 @RequestMapping("/products/create")
@@ -25,14 +25,14 @@ public class CreateProductController {
     }
 
     @PostMapping("/")
-    public String createProduct(@ModelAttribute("product") NewProductDTO productDTO, Model model) {
-        try {
-            createProductService.createProduct(productDTO);
-        } catch (IllegalArgumentException | UnsupportedExtensionException | FileTooLargeException | IOException e) {
-            model.addAttribute("error", e.getMessage());
+    public String createProduct(@ModelAttribute("product") NewProductDTO productDTO, RedirectAttributes redirectAttributes) throws IOException {
+        HashMap<String, List<String>> errors = createProductService.createProduct(productDTO);
+        if (!errors.isEmpty()) {
+            redirectAttributes.addFlashAttribute("product", productDTO);
+            redirectAttributes.addFlashAttribute("errors", errors);
         }
-        model.addAttribute("product", productDTO);
-        return "create-product";
+        return "redirect:/products/create";
+
     }
 
     @Autowired
