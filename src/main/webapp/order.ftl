@@ -11,32 +11,36 @@
 <div class="container">
 <#include "resources/ftl/navbar.ftl">
 <#if success??>
-    ${success}
+    <h3>${success}</h3>
 <#else>
-    <h1>Create order</h1>
-    <div>
-        <div id="cart">
-            <#include "resources/ftl/cart-table.ftl">
-            <form id="create-order" name="order" action="<@spring.url '/order/'/>" method="post">
-                <div>
-                    Total price:
-                    <label>
-                        <input type="number" id="total-price" name="totalPrice" readonly="true"/>
-                    </label>
+    <div class="container">
+        <h1>Create order</h1>
+        <div id="cart"></div>
+        <#include "resources/ftl/cart-table.ftl">
+        <form id="create-order" name="order" action="<@spring.url '/order/'/>"
+              method="post" class="form-horizontal">
+            <div class="form-group form-inline">
+                <label for="total-price" class="control-label col-sm-2"> Total price </label>
+                <div class="col-sm-10">
+                    <input type="number" id="total-price" name="totalPrice" class="form-control" readonly="readonly"/>
                 </div>
-                <div>
-                    Address:
-                    <label>
-                        <input type="text" name="address" value="" required/>
-                    </label>
+            </div>
+            <div class="form-group">
+                <label for="address" class="control-label col-sm-2">Address</label>
+                <div class="col-sm-<#if error??>5<#else>10</#if>">
+                    <input id="address" type="text" name="address" class="form-control" value="" required/>
                 </div>
-                <button type="submit" class="btn btn-primary">Create order</button>
                 <#if error??>
-                ${error}
+                    <div class="col-sm-5">
+                        <p>${error}</p>
+                    </div>
                 </#if>
-            </form>
-        </div>
+            </div>
+            <br>
+            <button type="submit" class="btn btn-primary">Create order</button>
+        </form>
     </div>
+</div>
 </#if>
 </body>
 </html>

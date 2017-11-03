@@ -34,7 +34,7 @@ public class OrderService {
     @Transactional
     public Integer createOrder(Integer userId, OrderDto orderDto) throws IllegalArgumentException {
         if (orderDto.getAddress().isEmpty() || orderDto.getAddress().length() > ADDRESS_LENGTH) {
-            throw new IllegalArgumentException("address field fulfilled wrong");
+            throw new IllegalArgumentException("Address cannot be empty or contain more than "+ ADDRESS_LENGTH + " characters");
         }
         UserEntity userEntity = userRepository.findOne(userId);
 

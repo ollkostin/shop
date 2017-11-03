@@ -3,11 +3,11 @@ package ru.practice.kostin.shop.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import ru.practice.kostin.shop.security.CustomUserDetails;
 import ru.practice.kostin.shop.service.OrderService;
 import ru.practice.kostin.shop.service.dto.OrderDto;
@@ -23,16 +23,16 @@ public class OrderController {
     }
 
     @PostMapping("/")
-    public String createOrder(@ModelAttribute("order") OrderDto orderDto, Model model) {
+    public String createOrder(@ModelAttribute("order") OrderDto orderDto, RedirectAttributes redirectAttributes) {
         CustomUserDetails user = (CustomUserDetails)
                 (SecurityContextHolder.getContext().getAuthentication().getPrincipal());
         try {
             Integer orderId = orderService.createOrder(user.getId(), orderDto);
-            model.addAttribute("success", "Order created successfully with id:" + orderId);
+            redirectAttributes.addFlashAttribute("success", "Order created successfully with id:" + orderId);
         } catch (IllegalArgumentException e) {
-            model.addAttribute("error", e.getMessage());
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
         }
-        return "order";
+        return "redirect:/order";
     }
 
     @Autowired
