@@ -14,49 +14,66 @@
           class="form-horizontal">
         <div class="form-group">
             <label for="product-name" class="control-label col-sm-2">Name</label>
-            <div class="col-sm-10">
-                <input id="product-name" type="text" name="name" class="form-control" value="${(product.name)!''}" required/>
-                <#if errors??>
-                    <#if errors["name"]??>
-                        <#list errors["name"] as msg>
-                            <p>${msg}</p>
-                        </#list>
-                    </#if>
-                </#if>
+            <div class="col-sm-<#if errors?? && errors["name"]??>5 <#else>10</#if>">
+                <input id="product-name" type="text" name="name" class="form-control" value="${(product.name)!''}"
+                       required/>
             </div>
+        <#if errors?? && errors["name"]??>
+            <div class="col-sm-5">
+                <p>${errors["name"][0]}</p>
+            </div>
+        </#if>
         </div>
         <div class="form-group">
             <label for="product-description" class="control-label col-sm-2">Description</label>
-            <div class="col-sm-10">
-                <textarea id="product-description" name="description" class="text-area" required>${(product.description)!''}</textarea>
-                <#if errors??>
-                    <#if errors["description"]??>
-                        <#list errors["description"] as msg>
-                            <p>${msg}</p>
-                        </#list>
-                    </#if>
-                </#if>
+            <div class="col-sm-<#if errors?? && errors["description"]??>5<#else>10</#if>">
+                <textarea id="product-description"
+                          name="description"
+                          class="text-area"
+                          required>${(product.description)!''}</textarea>
             </div>
+        <#if errors?? && errors["description"]??>
+            <div class="col-sm-5">
+                <p>${errors["description"][0]}</p>
+            </div>
+        </#if>
         </div>
         <div class="form-group">
             <label for="product-price" class="control-label col-sm-2">Price</label>
-            <div class="col-sm-10">
-                <input id="product-price" type="number" name="price" class="form-control" value="${(product.price)!''}" required/>
-                <#if errors??>
-                    <#if errors["price"]??>
-                        <#list errors["price"] as msg>
-                            <p>${msg}</p>
-                        </#list>
-                    </#if>
-                </#if>
+            <div class="col-sm-<#if errors?? && errors["price"]??>5<#else>10</#if>">
+                <input id="product-price" type="number" name="price" class="form-control"
+                       value="${(product.price)!''}" required/>
             </div>
+        <#if errors?? && errors["price"]??>
+            <div class="col-sm-5">
+                <p>${errors["price"][0]}</p>
+            </div>
+        </#if>
         </div>
         <div class="form-group">
-            <label for="file" class="control-label col-sm-2">Photo <button type="button"  class="btn btn-success" onclick="onAddPhoto()">+</button></label>
-            <div id="photos" class="col-sm-10">
-                <input class="file-input" type="file" name="photos" required/>
-
+            <label for="file" class="control-label col-sm-2">Photo</label>
+            <div class="col-sm-10">
+                <button id="add-file" type="button" class="btn btn-success" onclick="onAddPhoto()">+</button>
+                <div id="photos" class="col-sm-10">
+                    <div class="btn-group file-1">
+                        <input class="btn file-1" type="file" name="photos" required/>
+                    </div>
+                </div>
             </div>
+            <br>
+            <#if errors??>
+                <#list errors?keys as key>
+                    <#if key !="name" && key != "description" && key != "price">
+                        <#list errors[key]>
+                            <ul>
+                                <#items as msg>
+                                    <li>${msg}</li>
+                                </#items>
+                            </ul>
+                        </#list>
+                    </#if>
+                </#list>
+            </#if>
         </div>
         <input type="submit" class="btn btn-success" value="Save">
     </form>

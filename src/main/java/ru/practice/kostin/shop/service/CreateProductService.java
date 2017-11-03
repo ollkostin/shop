@@ -17,6 +17,8 @@ import java.util.*;
 
 @Service
 public class CreateProductService {
+    private final int NAME_LENGTH = 255;
+    private final int DESCRIPTION_LENGTH = 1000;
     private ProductRepository productRepository;
     private ProductPhotoRepository productPhotoRepository;
     private FileService fileService;
@@ -25,7 +27,7 @@ public class CreateProductService {
     /**
      * Saves product
      *
-     * @param productDTO
+     * @param productDTO product information
      * @return map with errors
      * @throws IOException
      */
@@ -39,31 +41,36 @@ public class CreateProductService {
             product.setPrice(BigDecimal.valueOf(productDTO.getPrice()));
             productRepository.save(product);
             savePhotos(product, productDTO.getPhotos());
+            productDTO.setId(product.getId());
         }
         return errors;
     }
 
     public HashMap<String, List<String>> validateNewProductDTO(NewProductDTO productDTO) {
         HashMap<String, List<String>> errors = new HashMap<>();
-        if (productDTO.getName().isEmpty() || productDTO.getName().length() > 255) {
-            errors.put("name", Collections.singletonList("Name can not be empty and contain less than 255 characters"));
+        if (productDTO.getName().isEmpty() || productDTO.getName().length() > NAME_LENGTH) {
+            errors.put("name", Collections.singletonList("Name can not be empty or contain more than " + NAME_LENGTH + " characters"));
         }
-        if (productDTO.getDescription().isEmpty() || productDTO.getDescription().length() > 2000) {
-            errors.put("description", Collections.singletonList("Description can not be empty and contain more than 2000 characters"));
+        if (productDTO.getDescription().isEmpty() || productDTO.getDescription().length() > DESCRIPTION_LENGTH) {
+            errors.put("description", Collections.singletonList("Description can not be empty or contain more than " + DESCRIPTION_LENGTH + " characters"));
         }
         if (productDTO.getPrice() == null || productDTO.getPrice() < 1) {
             errors.put("price", Collections.singletonList("Price can not be empty or less than zero"));
         }
-        for (MultipartFile photo : productDTO.getPhotos()) {
-            List<String> fileErrors = new ArrayList<>();
-            String fileName = photo.getOriginalFilename();
-            if (!PhotoFileUtil.fileHasImageExtension(photo)) {
-                fileErrors.add("File \"" + fileName + "\" has not supported or not image extension " + Arrays.toString(PhotoFileUtil.getImageExtensions()));
+        if (productDTO.getPhotos() != null && productDTO.getPhotos().length > 0) {
+            for (MultipartFile photo : productDTO.getPhotos()) {
+                List<String> fileErrors = new ArrayList<>();
+                String fileName = photo.getOriginalFilename();
+                if (!PhotoFileUtil.fileHasImageExtension(photo)) {
+                    fileErrors.add("File \"" + fileName + "\" has not supported or not image extension " + Arrays.toString(PhotoFileUtil.getImageExtensions()));
+                }
+                if (!PhotoFileUtil.isSizeAllowed(photo)) {
+                    fileErrors.add("File \"" + fileName + "\" is larger than allowed size : ");
+                }
+                if (!fileErrors.isEmpty()) {
+                    errors.put(fileName, fileErrors);
+                }
             }
-            if (!PhotoFileUtil.isSizeAllowed(photo)) {
-                fileErrors.add("File \"" + fileName + "\" is larger than allowed size : ");
-            }
-            errors.put(fileName, fileErrors);
         }
         return errors;
     }

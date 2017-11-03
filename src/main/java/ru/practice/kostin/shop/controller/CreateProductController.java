@@ -24,15 +24,22 @@ public class CreateProductController {
         return "create-product";
     }
 
+    /**
+     * Creates product from dto
+     * @param productDTO product info
+     * @param redirectAttributes redirect attributes
+     * @return page of the product or shows errors
+     * @throws IOException
+     */
     @PostMapping("/")
     public String createProduct(@ModelAttribute("product") NewProductDTO productDTO, RedirectAttributes redirectAttributes) throws IOException {
         HashMap<String, List<String>> errors = createProductService.createProduct(productDTO);
         if (!errors.isEmpty()) {
             redirectAttributes.addFlashAttribute("product", productDTO);
             redirectAttributes.addFlashAttribute("errors", errors);
+            return "redirect:/products/create";
         }
-        return "redirect:/products/create";
-
+        return "redirect:/products/" + productDTO.getId();
     }
 
     @Autowired
