@@ -1,4 +1,4 @@
-let alrearyInCartMsg = function () {
+let alreadyInCartMsg = function () {
     return $('<p>Already in cart</p>');
 };
 
@@ -33,7 +33,7 @@ function addToCart() {
     let currentRow = $(this).closest("tr");
     let productId = currentRow.find("td:eq(0)").text();
     addProductToCart(productId, function (resp) {
-        $('#cart-btn-' + productId).replaceWith(alrearyInCartMsg);
+        $('#cart-btn-' + productId).replaceWith(alreadyInCartMsg);
     }, function (resp) {
         alert(resp.responseJSON.message);
     })
@@ -41,7 +41,7 @@ function addToCart() {
 
 function cartButtonOrAlreadyInCartMessage(productId) {
     if (productListIds.includes(productId)) {
-        return alrearyInCartMsg;
+        return alreadyInCartMsg;
     }
     else {
         return cartButton(productId);
