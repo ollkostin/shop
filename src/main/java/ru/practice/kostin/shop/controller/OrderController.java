@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import ru.practice.kostin.shop.security.CustomUserDetails;
 import ru.practice.kostin.shop.service.OrderService;
-import ru.practice.kostin.shop.service.dto.OrderDto;
+import ru.practice.kostin.shop.service.dto.OrderDTO;
 
 @Controller
 @RequestMapping("/order")
@@ -23,11 +23,11 @@ public class OrderController {
     }
 
     @PostMapping("/")
-    public String createOrder(@ModelAttribute("order") OrderDto orderDto, RedirectAttributes redirectAttributes) {
+    public String createOrder(@ModelAttribute("order") OrderDTO orderDTO, RedirectAttributes redirectAttributes) {
         CustomUserDetails user = (CustomUserDetails)
                 (SecurityContextHolder.getContext().getAuthentication().getPrincipal());
         try {
-            Integer orderId = orderService.createOrder(user.getId(), orderDto);
+            Integer orderId = orderService.createOrder(user.getId(), orderDTO);
             redirectAttributes.addFlashAttribute("success", "Order created successfully with id:" + orderId);
         } catch (IllegalArgumentException e) {
             redirectAttributes.addFlashAttribute("error", e.getMessage());

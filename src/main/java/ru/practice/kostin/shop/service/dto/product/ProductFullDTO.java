@@ -1,11 +1,15 @@
 package ru.practice.kostin.shop.service.dto.product;
 
+import lombok.Getter;
+import lombok.Setter;
 import ru.practice.kostin.shop.persistence.entity.ProductEntity;
 import ru.practice.kostin.shop.persistence.entity.ProductPhotoEntity;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Getter
+@Setter
 public class ProductFullDTO extends ProductDTO {
     private String description;
     private List<String> photos;
@@ -18,21 +22,5 @@ public class ProductFullDTO extends ProductDTO {
                 photos.stream()
                         .map(ProductPhotoEntity::getPath)
                         .collect(Collectors.toList());
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public List<String> getPhotos() {
-        return photos;
-    }
-
-    public void setPhotos(List<String> photos) {
-        this.photos = photos;
     }
 }

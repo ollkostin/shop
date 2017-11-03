@@ -1,7 +1,11 @@
 package ru.practice.kostin.shop.service.dto.product;
 
+import lombok.Getter;
+import lombok.Setter;
 import ru.practice.kostin.shop.persistence.entity.CartEntity;
 
+@Getter
+@Setter
 public class ProductInCartDTO extends ProductShortDTO {
     private Integer count;
 
@@ -10,11 +14,4 @@ public class ProductInCartDTO extends ProductShortDTO {
         this.count = cartEntity.getCount();
     }
 
-    public Integer getCount() {
-        return count;
-    }
-
-    public void setCount(Integer count) {
-        this.count = count;
-    }
 }

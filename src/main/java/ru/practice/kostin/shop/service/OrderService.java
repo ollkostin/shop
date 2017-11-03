@@ -8,7 +8,7 @@ import ru.practice.kostin.shop.persistence.entity.OrderEntity;
 import ru.practice.kostin.shop.persistence.entity.UserEntity;
 import ru.practice.kostin.shop.persistence.repository.OrderRepository;
 import ru.practice.kostin.shop.persistence.repository.UserRepository;
-import ru.practice.kostin.shop.service.dto.OrderDto;
+import ru.practice.kostin.shop.service.dto.OrderDTO;
 
 import javax.transaction.Transactional;
 import java.time.Instant;
@@ -27,20 +27,20 @@ public class OrderService {
     /**
      * Creates order for user
      * @param userId user id
-     * @param orderDto order information
+     * @param orderDTO order information
      * @return order id
      * @throws IllegalArgumentException
      */
     @Transactional
-    public Integer createOrder(Integer userId, OrderDto orderDto) throws IllegalArgumentException {
-        if (orderDto.getAddress().isEmpty() || orderDto.getAddress().length() > ADDRESS_LENGTH) {
+    public Integer createOrder(Integer userId, OrderDTO orderDTO) throws IllegalArgumentException {
+        if (orderDTO.getAddress().isEmpty() || orderDTO.getAddress().length() > ADDRESS_LENGTH) {
             throw new IllegalArgumentException("Address cannot be empty or contain more than "+ ADDRESS_LENGTH + " characters");
         }
         UserEntity userEntity = userRepository.findOne(userId);
 
         OrderEntity order = new OrderEntity();
         order.setDate(Date.from(Instant.now()));
-        order.setAddress(orderDto.getAddress());
+        order.setAddress(orderDTO.getAddress());
         order.setUser(userEntity);
 
         List<CartEntity> cartEntityList = cartService.getCart(userId);
