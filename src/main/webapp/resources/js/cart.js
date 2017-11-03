@@ -47,7 +47,6 @@ function increaseProductCount() {
     let currentRow = $(this).closest("tr");
     let productId = currentRow.find("td:eq(0)").text();
     addProductToCart(productId, function (resp) {
-        alert('Added product');
         location.reload();
     }, function (resp) {
         alert(resp.responseJSON.message);
@@ -58,7 +57,6 @@ function decreaseProductCount() {
     let currentRow = $(this).closest("tr");
     let productId = currentRow.find("td:eq(0)").text();
     removeProductFromCart(productId, function (resp) {
-        alert('Removed product');
         location.reload();
     }, function (resp) {
         alert(resp.responseJSON.message);
@@ -67,7 +65,6 @@ function decreaseProductCount() {
 
 function onClickClearCart() {
     clearCart(function (resp) {
-        alert('now cart is empty');
         location.reload();
     }, function (resp) {
         alert(resp.responseJSON.message);

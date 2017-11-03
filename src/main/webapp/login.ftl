@@ -1,18 +1,26 @@
- <#import "spring.ftl" as spring />
+<#import "spring.ftl" as spring />
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
+<#include "resources/ftl/head.ftl">
     <title>Login</title>
 </head>
 <body>
-<div>
+<div class="container">
     <form name="f" action="login" method="post">
         <fieldset>
             <legend>Login</legend>
-            <label for="email">Email</label>
-            <input type="text" id="email" name="email"/>
-            <label for="password">Password</label>
-            <input type="password" id="password" name="password"/>
+            <div class="form-group">
+                <label for="email" class="control-label col-sm-2">Email</label>
+                <div class="col-sm-10">
+                    <input type="text" id="email" name="email" value="${(user.email)!''}" required/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="password" class="control-label col-sm-2">Password</label>
+                <div class="col-sm-10">
+                    <input type="password" id="password" name="password" value="${(user.password)!''}" required/>
+                </div>
+            </div>
             <div class="form-actions">
                 <button type="submit" class="btn">Log in</button>
             </div>
@@ -21,6 +29,9 @@
             </#if>
         </fieldset>
     </form>
-    <a href="register"> register </a>
+    <div>
+        <a href="<@spring.url '/register'/>"> Register </a>
+    </div>
+</div>
 </body>
 </html>

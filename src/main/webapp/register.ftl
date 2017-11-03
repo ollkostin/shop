@@ -1,27 +1,44 @@
 <#import "spring.ftl" as spring />
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
+<#include "resources/ftl/head.ftl">
     <title>Login</title>
 </head>
 <body>
-<form name="f" action="<@spring.url '/register'/>" method="post">
-    <fieldset>
-        <legend>Register</legend>
-        <label for="email">Email</label>
-        <input type="text" id="email" name="email" required/>
-        <label for="password">Password</label>
-        <input type="password" id="password" name="password" required/>
-        <label for="password-confirm">Confirm password</label>
-        <input type="password" id="password-confirm" name="confirm" required/>
-        <div class="form-actions">
-            <button type="submit" class="btn">Register</button>
-        </div>
+<div class="container">
+    <form name="user" action="<@spring.url '/register'/>" method="post" class="form-horizontal">
+        <fieldset>
+            <legend>Register</legend>
+            <div class="form-group">
+                <label for="email" class="control-label col-sm-2">Email</label>
+                <div class="col-sm-10">
+                    <input type="text" id="email" name="email" value="${(user.email)!''}" required/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="password" class="control-label col-sm-2">Password</label>
+                <div class="col-sm-10">
+                    <input type="password" id="password" name="password" required/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="password-confirm" class="control-label col-sm-2">Confirm password</label>
+                <div class="col-sm-10">
+                    <input type="password" id="password-confirm" name="confirmPassword" required/>
+                </div>
+            </div>
+            <div class="form-actions">
+                <button type="submit" class="btn">Register</button>
+            </div>
         <#if error??>
-            ${error}
+            <p>${error}</p>
         </#if>
-    </fieldset>
-    <a href="<@spring.url '/login'/>"> login </a>
-</form>
+        </fieldset>
+        <br>
+        <div>
+            <a href="<@spring.url '/login'/>"> Log in </a>
+        </div>
+    </form>
+</div>
 </body>
 </html>

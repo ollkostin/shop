@@ -9,6 +9,7 @@ import ru.practice.kostin.shop.persistence.entity.RoleName;
 import ru.practice.kostin.shop.persistence.entity.UserEntity;
 import ru.practice.kostin.shop.persistence.repository.RoleRepository;
 import ru.practice.kostin.shop.persistence.repository.UserRepository;
+import ru.practice.kostin.shop.service.dto.product.NewUserDTO;
 
 import javax.transaction.Transactional;
 import java.util.Collections;
@@ -20,17 +21,17 @@ public class UserService {
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Transactional
-    public UserEntity createUser(String email, String password, String confirmPassword) throws UserAlreadyExistsException, PasswordMismatchException {
-        UserEntity user = userRepository.findOneByEmail(email);
+    public UserEntity createUser(NewUserDTO userDTO) throws UserAlreadyExistsException, PasswordMismatchException {
+        UserEntity user = userRepository.findOneByEmail(userDTO.getEmail());
         if (user != null) {
-            throw new UserAlreadyExistsException("user with email " + email + " already exists");
+            throw new UserAlreadyExistsException("user with email " + userDTO.getEmail() + " already exists");
         }
-        if (!password.equals(confirmPassword)) {
+        if (!userDTO.getPassword().equals(userDTO.getConfirmPassword())) {
             throw new PasswordMismatchException("password mismatch");
         }
         user = new UserEntity();
-        user.setEmail(email);
-        user.setPasswordHash(bCryptPasswordEncoder.encode(password));
+        user.setEmail(userDTO.getEmail());
+        user.setPasswordHash(bCryptPasswordEncoder.encode(userDTO.getPassword()));
         user.setRoles(Collections.singletonList(roleRepository.findByName(RoleName.ROLE_USER)));
         return userRepository.save(user);
     }
