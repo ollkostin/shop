@@ -1,6 +1,12 @@
 let productId = window.location.href.substr(window.location.href.lastIndexOf('/') + 1);
-
-getProduct(productId, onSuccessLoadProduct);
+$(document).ready(function () {
+    getProduct(productId, onSuccessLoadProduct, function (resp) {
+        if (resp.status === 404) {
+            clearChildNodes($('#product'));
+            $('#product').append("<h3>"+ resp.responseJSON.error +"</h3>")
+        }
+    });
+});
 
 
 function onSuccessLoadProduct(product) {

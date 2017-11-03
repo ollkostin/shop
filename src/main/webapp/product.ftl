@@ -11,7 +11,7 @@
 <body>
 <div class="container">
     <#include "resources/ftl/navbar.ftl">
-    <div class="panel panel-default">
+    <div id="product" class="container">
         <div id="image-carousel" class="col-xs-12 col-sm-6 col-md-6 carousel slide" data-ride="carousel">
             <div id="product-photos" class="carousel-inner"></div>
             <a id="carousel-prev" class="left carousel-control" href="#image-carousel" data-slide="prev">
