@@ -41,7 +41,7 @@
         <div class="form-group">
             <label for="product-price" class="control-label col-sm-2">Price</label>
             <div class="col-sm-<#if errors?? && errors["price"]??>5<#else>10</#if>">
-                <input id="product-price" type="number" name="price" class="form-control"
+                <input id="product-price" type="number" step="0.01" min="0.01" name="price" class="form-control"
                        value="${(product.price)!''}" required/>
             </div>
         <#if errors?? && errors["price"]??>

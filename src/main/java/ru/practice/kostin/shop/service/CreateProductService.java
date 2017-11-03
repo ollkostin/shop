@@ -55,7 +55,7 @@ public class CreateProductService {
             errors.put("description", Collections.singletonList("Description can not be empty or contain more than " + DESCRIPTION_LENGTH + " characters"));
         }
         if (productDTO.getPrice() == null || productDTO.getPrice() < 1) {
-            errors.put("price", Collections.singletonList("Price can not be empty or less than zero"));
+            errors.put("price", Collections.singletonList("Price can not be empty or less than one"));
         }
         if (productDTO.getPhotos() != null && productDTO.getPhotos().length > 0) {
             for (MultipartFile photo : productDTO.getPhotos()) {
