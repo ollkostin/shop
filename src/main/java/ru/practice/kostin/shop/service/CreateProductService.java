@@ -68,10 +68,10 @@ public class CreateProductService {
                 List<String> fileErrors = new ArrayList<>();
                 String fileName = photo.getOriginalFilename();
                 if (!fileHasImageExtension(photo)) {
-                    fileErrors.add("File \"" + fileName + "\" has not supported or not image extension " + Arrays.toString(getImageExtensions()));
+                    fileErrors.add("File \"" + fileName + "\" has not supported or not image extension " + Arrays.toString(IMAGE_EXTENSIONS));
                 }
                 if (!isSizeAllowed(photo)) {
-                        fileErrors.add("File \"" + fileName + "\" is larger than allowed size : " + getAllowedSizeByte() / (1024 * 1024) + " Mb");
+                        fileErrors.add("File \"" + fileName + "\" is larger than allowed size : " + ALLOWED_SIZE_BYTE / (1024 * 1024) + " Mb");
                 }
                 if (!fileErrors.isEmpty()) {
                     errors.put(fileName, fileErrors);

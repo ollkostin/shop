@@ -4,8 +4,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 public class PhotoFileUtil {
 
-    private static final long ALLOWED_SIZE_BYTE = 10485760;
-    private static final String[] IMAGE_EXTENSIONS = {"png", "jpg"};
+    public static final long ALLOWED_SIZE_BYTE = 10485760;
+    public static final String[] IMAGE_EXTENSIONS = {"png", "jpg"};
 
     /**
      * Checks if file extension is image extension
@@ -31,13 +31,5 @@ public class PhotoFileUtil {
      */
     public static boolean isSizeAllowed(MultipartFile multipartFile) {
         return multipartFile.getSize() < ALLOWED_SIZE_BYTE;
-    }
-
-    public static long getAllowedSizeByte() {
-        return ALLOWED_SIZE_BYTE;
-    }
-
-    public static String[] getImageExtensions() {
-        return IMAGE_EXTENSIONS;
     }
 }
