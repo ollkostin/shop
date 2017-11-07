@@ -49,10 +49,11 @@ public class CreateProductService {
 
     /**
      * Validates product information
+     *
      * @param productDTO product DTO
      * @return map with errors
      */
-    public HashMap<String, List<String>> validateNewProductDTO(NewProductDTO productDTO) {
+    private HashMap<String, List<String>> validateNewProductDTO(NewProductDTO productDTO) {
         HashMap<String, List<String>> errors = new HashMap<>();
         if (productDTO.getName().isEmpty() || productDTO.getName().length() > NAME_LENGTH) {
             errors.put("name", Collections.singletonList("Name can not be empty or contain more than " + NAME_LENGTH + " characters"));
@@ -71,7 +72,7 @@ public class CreateProductService {
                     fileErrors.add("File \"" + fileName + "\" has not supported or not image extension " + Arrays.toString(IMAGE_EXTENSIONS));
                 }
                 if (!isSizeAllowed(photo)) {
-                        fileErrors.add("File \"" + fileName + "\" is larger than allowed size : " + ALLOWED_SIZE_BYTE / (1024 * 1024) + " Mb");
+                    fileErrors.add("File \"" + fileName + "\" is larger than allowed size : " + ALLOWED_SIZE_BYTE / (1024 * 1024) + " Mb");
                 }
                 if (!fileErrors.isEmpty()) {
                     errors.put(fileName, fileErrors);
@@ -84,11 +85,12 @@ public class CreateProductService {
     /**
      * Saves product photos in filesystem
      * and stores paths to them
+     *
      * @param product product entity
-     * @param photos image files
+     * @param photos  image files
      * @throws IOException
      */
-    public void savePhotos(ProductEntity product, MultipartFile[] photos) throws IOException {
+    private void savePhotos(ProductEntity product, MultipartFile[] photos) throws IOException {
         if (photos != null && photos.length > 0) {
             List<ProductPhotoEntity> productPhotoEntityList = new ArrayList<>();
             for (MultipartFile photo : photos) {
