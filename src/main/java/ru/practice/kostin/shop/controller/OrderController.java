@@ -22,6 +22,12 @@ public class OrderController {
         return "order";
     }
 
+    /**
+     * Creates order
+     * @param orderDTO order
+     * @param redirectAttributes redirect attributes
+     * @return page with info of successful creation or with errors
+     */
     @PostMapping("/")
     public String createOrder(@ModelAttribute("order") OrderDTO orderDTO, RedirectAttributes redirectAttributes) {
         CustomUserDetails user = (CustomUserDetails)

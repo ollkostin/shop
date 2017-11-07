@@ -2,10 +2,10 @@ package ru.practice.kostin.shop.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-import ru.practice.kostin.shop.exception.FileTooLargeException;
-import ru.practice.kostin.shop.exception.UnsupportedExtensionException;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import ru.practice.kostin.shop.service.FileService;
 
 import javax.servlet.http.HttpServletResponse;
@@ -35,23 +35,6 @@ public class PhotoController {
         }
         fileService.setResponseContentImageHeaders(file, response);
         fileService.readFileIntoResponse(file, response);
-    }
-
-    /**
-     * Uploads photo of the product
-     *
-     * @param productId product id
-     * @param file      file in multipart form data format
-     * @return name of file
-     * @throws IOException
-     * @throws UnsupportedExtensionException when file is not supported image extension
-     * @throws FileTooLargeException         when file size is bigger than allowed
-     */
-    @PostMapping("/")
-    public String uploadFile(@RequestParam("productId") Integer productId,
-                             @RequestParam("file") MultipartFile file)
-            throws IOException, UnsupportedExtensionException, FileTooLargeException {
-        return fileService.saveFile(file, productId);
     }
 
     @Autowired

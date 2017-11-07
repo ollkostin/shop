@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import ru.practice.kostin.shop.exception.NotAllowedException;
-import ru.practice.kostin.shop.exception.UnsupportedExtensionException;
 import ru.practice.kostin.shop.service.dto.error.ErrorDTO;
 
 import javax.servlet.http.HttpServletResponse;
@@ -33,12 +32,6 @@ public class ControllerExceptionHandler {
     public ErrorDTO internalServerException(Exception ex) {
         LOGGER.error(ex.getMessage());
         return new ErrorDTO("500", ex.getMessage());
-    }
-
-    @ExceptionHandler(UnsupportedExtensionException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorDTO unsupportedExtensionException(UnsupportedExtensionException ex) {
-        return new ErrorDTO("400", ex.getMessage());
     }
 
     @ExceptionHandler(FileNotFoundException.class)

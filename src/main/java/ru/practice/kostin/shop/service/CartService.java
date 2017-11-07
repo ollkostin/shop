@@ -21,6 +21,12 @@ public class CartService {
     private CartRepository cartRepository;
     private ProductRepository productRepository;
 
+    /**
+     * Gets cart by user id
+     *
+     * @param userId user id
+     * @return list of product DTOs
+     */
     @Transactional
     public List<ProductInCartDTO> getProductsInCart(Integer userId) {
         List<CartEntity> cart = getCart(userId);
@@ -30,6 +36,13 @@ public class CartService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Adds product by id to cart
+     *
+     * @param productId product id
+     * @param userId    user id
+     * @throws NotFoundException product was not found
+     */
     @Transactional
     public void addProductToCart(Integer productId, Integer userId) throws NotFoundException {
         ProductEntity productEntity = productRepository.findOne(productId);
@@ -48,6 +61,13 @@ public class CartService {
         cartRepository.save(cart);
     }
 
+    /**
+     * Removes product from cart by id
+     *
+     * @param productId product id
+     * @param userId    user id
+     * @throws NotAllowedException no product in cart
+     */
     @Transactional
     public void removeProductFromCart(Integer productId, Integer userId) throws NotAllowedException {
         CartId cartId = new CartId(userId, productId);
@@ -64,11 +84,22 @@ public class CartService {
         }
     }
 
+    /**
+     * Clears cart
+     *
+     * @param userId user id
+     */
     @Transactional
     public void clearCart(Integer userId) {
         cartRepository.delete(getCart(userId));
     }
 
+    /**
+     * Gets cart
+     *
+     * @param userId user id
+     * @return list of product entities
+     */
     @Transactional
     public List<CartEntity> getCart(Integer userId) {
         return cartRepository.findAll((root, query, cb) -> {

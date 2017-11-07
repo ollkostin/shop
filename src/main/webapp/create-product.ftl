@@ -55,27 +55,31 @@
             <div class="col-sm-10">
                 <button id="add-file" type="button" class="btn btn-success" onclick="onAddPhoto()">+</button>
                 <div id="photos" class="col-sm-10">
-                    <div class="btn-group file-1">
-                        <input class="btn file-1" type="file" name="photos" required/>
+                    <div class="col-xs-12 btn-group file-1">
+                        <input class="btn file-1" type="file" name="photos" required"/>
                     </div>
                 </div>
             </div>
-            <br>
-            <#if errors??>
-                <#list errors?keys as key>
-                    <#if key !="name" && key != "description" && key != "price">
-                        <#list errors[key]>
-                            <ul>
-                                <#items as msg>
-                                    <li>${msg}</li>
-                                </#items>
-                            </ul>
-                        </#list>
-                    </#if>
-                </#list>
-            </#if>
         </div>
-        <input type="submit" class="btn btn-success" value="Save">
+    <#if errors??>
+        <div class="col-sm-push-2 col-sm-10">
+            <#list errors?keys as key>
+                <#if key !="name" && key != "description" && key != "price">
+                    <#list errors[key]>
+                        <ul>
+                            <#items as msg>
+                                <li>${msg}</li>
+                            </#items>
+                        </ul>
+                    </#list>
+                </#if>
+            </#list>
+        </div>
+    </#if>
+        <div class="pull-right">
+            <hr>
+            <input type="submit" class="btn btn-success" value="Save">
+        </div>
     </form>
 </div>
 </body>

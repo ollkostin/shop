@@ -25,10 +25,11 @@ public class CreateProductController {
     }
 
     /**
-     * Creates product from dto
+     * Creates product.
+     * If info was fulfilled incorrect returns list of errors.
      * @param productDTO product info
      * @param redirectAttributes redirect attributes
-     * @return page of the product or shows errors
+     * @return page of the product
      * @throws IOException
      */
     @PostMapping("/")

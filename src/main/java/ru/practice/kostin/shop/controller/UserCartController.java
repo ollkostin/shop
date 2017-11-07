@@ -45,6 +45,7 @@ public class UserCartController {
 
     /**
      * Removes product from user's cart
+     *
      * @param productId id of product
      * @return http status ok
      * @throws NotAllowedException if cart does not contain specified product
@@ -59,6 +60,7 @@ public class UserCartController {
 
     /**
      * Clears user's cart
+     *
      * @return http status OK
      */
     @DeleteMapping("/")

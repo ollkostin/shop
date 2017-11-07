@@ -29,7 +29,6 @@
         </thead>
         <tbody id="products"></tbody>
     </table>
-    <!--TODO:прилепить внизу страницы и отключать кнопки в зависимости от количества-->
     <div class="text-center">
         <button id="prev-page"
                 class="btn btn-primary"

@@ -8,17 +8,18 @@ import ru.practice.kostin.shop.persistence.entity.ProductPhotoEntity;
 import ru.practice.kostin.shop.persistence.repository.ProductPhotoRepository;
 import ru.practice.kostin.shop.persistence.repository.ProductRepository;
 import ru.practice.kostin.shop.service.dto.product.NewProductDTO;
-import ru.practice.kostin.shop.util.PhotoFileUtil;
 
 import javax.transaction.Transactional;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.*;
 
+import static ru.practice.kostin.shop.util.PhotoFileUtil.*;
+
 @Service
 public class CreateProductService {
-    private final int NAME_LENGTH = 255;
-    private final int DESCRIPTION_LENGTH = 1000;
+    private static final int NAME_LENGTH = 255;
+    private static final int DESCRIPTION_LENGTH = 1000;
     private ProductRepository productRepository;
     private ProductPhotoRepository productPhotoRepository;
     private FileService fileService;
@@ -46,6 +47,11 @@ public class CreateProductService {
         return errors;
     }
 
+    /**
+     * Validates product information
+     * @param productDTO product DTO
+     * @return map with errors
+     */
     public HashMap<String, List<String>> validateNewProductDTO(NewProductDTO productDTO) {
         HashMap<String, List<String>> errors = new HashMap<>();
         if (productDTO.getName().isEmpty() || productDTO.getName().length() > NAME_LENGTH) {
@@ -61,11 +67,11 @@ public class CreateProductService {
             for (MultipartFile photo : productDTO.getPhotos()) {
                 List<String> fileErrors = new ArrayList<>();
                 String fileName = photo.getOriginalFilename();
-                if (!PhotoFileUtil.fileHasImageExtension(photo)) {
-                    fileErrors.add("File \"" + fileName + "\" has not supported or not image extension " + Arrays.toString(PhotoFileUtil.getImageExtensions()));
+                if (!fileHasImageExtension(photo)) {
+                    fileErrors.add("File \"" + fileName + "\" has not supported or not image extension " + Arrays.toString(getImageExtensions()));
                 }
-                if (!PhotoFileUtil.isSizeAllowed(photo)) {
-                    fileErrors.add("File \"" + fileName + "\" is larger than allowed size : ");
+                if (!isSizeAllowed(photo)) {
+                        fileErrors.add("File \"" + fileName + "\" is larger than allowed size : " + getAllowedSizeByte() / (1024 * 1024) + " Mb");
                 }
                 if (!fileErrors.isEmpty()) {
                     errors.put(fileName, fileErrors);
@@ -75,6 +81,13 @@ public class CreateProductService {
         return errors;
     }
 
+    /**
+     * Saves product photos in filesystem
+     * and stores paths to them
+     * @param product product entity
+     * @param photos image files
+     * @throws IOException
+     */
     public void savePhotos(ProductEntity product, MultipartFile[] photos) throws IOException {
         if (photos != null && photos.length > 0) {
             List<ProductPhotoEntity> productPhotoEntityList = new ArrayList<>();

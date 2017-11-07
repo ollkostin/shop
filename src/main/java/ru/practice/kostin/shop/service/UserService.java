@@ -20,6 +20,14 @@ public class UserService {
     private RoleRepository roleRepository;
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
+    /**
+     * Creates new user
+     *
+     * @param userDTO user DTO
+     * @return created user
+     * @throws UserAlreadyExistsException user with specified email exists
+     * @throws PasswordMismatchException  password does not match confirmation password
+     */
     @Transactional
     public UserEntity createUser(NewUserDTO userDTO) throws UserAlreadyExistsException, PasswordMismatchException {
         UserEntity user = userRepository.findOneByEmail(userDTO.getEmail());
@@ -36,11 +44,16 @@ public class UserService {
         return userRepository.save(user);
     }
 
+    /**
+     * Gets user by email
+     *
+     * @param email email
+     * @return user
+     */
     @Transactional
     public UserEntity getUserByEmail(String email) {
         return userRepository.findOneByEmail(email);
     }
-
 
     @Autowired
     public void setUserRepository(UserRepository userRepository) {

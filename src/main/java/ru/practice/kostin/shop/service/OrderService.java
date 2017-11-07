@@ -18,7 +18,7 @@ import java.util.List;
 
 @Service
 public class OrderService {
-    private final int ADDRESS_LENGTH = 300;
+    private static final int ADDRESS_LENGTH = 300;
 
     private CartService cartService;
     private OrderRepository orderRepository;
@@ -26,16 +26,15 @@ public class OrderService {
 
     /**
      * Creates order for user
-     * @param userId user id
+     *
+     * @param userId   user id
      * @param orderDTO order information
      * @return order id
      * @throws IllegalArgumentException
      */
     @Transactional
     public Integer createOrder(Integer userId, OrderDTO orderDTO) throws IllegalArgumentException {
-        if (orderDTO.getAddress().isEmpty() || orderDTO.getAddress().length() > ADDRESS_LENGTH) {
-            throw new IllegalArgumentException("Address cannot be empty or contain more than "+ ADDRESS_LENGTH + " characters");
-        }
+        validateOrderDTO(orderDTO);
         UserEntity userEntity = userRepository.findOne(userId);
 
         OrderEntity order = new OrderEntity();
@@ -44,7 +43,7 @@ public class OrderService {
         order.setUser(userEntity);
 
         List<CartEntity> cartEntityList = cartService.getCart(userId);
-        List<OrderDetailsEntity> orderDetailsList  = new ArrayList<>();
+        List<OrderDetailsEntity> orderDetailsList = new ArrayList<>();
         for (CartEntity productInCart : cartEntityList) {
             OrderDetailsEntity orderDetails = new OrderDetailsEntity();
             orderDetails.setCount(productInCart.getCount());
@@ -55,6 +54,12 @@ public class OrderService {
         order.setOrderDetails(orderDetailsList);
         orderRepository.save(order);
         return order.getId();
+    }
+
+    public void validateOrderDTO(OrderDTO orderDTO) throws IllegalArgumentException {
+        if (orderDTO.getAddress().isEmpty() || orderDTO.getAddress().length() > ADDRESS_LENGTH) {
+            throw new IllegalArgumentException("Address cannot be empty or contain more than " + ADDRESS_LENGTH + " characters");
+        }
     }
 
     @Autowired

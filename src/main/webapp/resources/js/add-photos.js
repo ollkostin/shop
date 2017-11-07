@@ -6,7 +6,7 @@ function onAddPhoto() {
         if (ids.length == 0) {
             $("#add-file").hide();
         }
-        let file = $('<div class="btn-group ' + i + '" >' +
+        let file = $('<div class="col-xs-12 btn-group ' + i + '" >' +
             '<input class="btn ' + i + '" type="file" name="photos" required/>' +
             '<button type="button" ids="' + i + '" class="btn btn-danger" onclick="onDeletePhoto(event)">-</button>' +
             '</div>');
