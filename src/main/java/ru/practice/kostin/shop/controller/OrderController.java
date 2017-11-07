@@ -1,7 +1,7 @@
 package ru.practice.kostin.shop.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -24,14 +24,14 @@ public class OrderController {
 
     /**
      * Creates order
-     * @param orderDTO order
+     *
+     * @param orderDTO           order
      * @param redirectAttributes redirect attributes
      * @return page with info of successful creation or with errors
      */
     @PostMapping("/")
-    public String createOrder(@ModelAttribute("order") OrderDTO orderDTO, RedirectAttributes redirectAttributes) {
-        CustomUserDetails user = (CustomUserDetails)
-                (SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+    public String createOrder(@ModelAttribute("order") OrderDTO orderDTO, @AuthenticationPrincipal CustomUserDetails user,
+                              RedirectAttributes redirectAttributes) {
         try {
             Integer orderId = orderService.createOrder(user.getId(), orderDTO);
             redirectAttributes.addFlashAttribute("success", "Order created successfully with id:" + orderId);

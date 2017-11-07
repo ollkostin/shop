@@ -104,6 +104,7 @@ public class CartService {
     public List<CartEntity> getCart(Integer userId) {
         return cartRepository.findAll((root, query, cb) -> {
             root.join("id");
+            query.orderBy(cb.asc(root.get("product")));
             return cb.equal(root.get("id").get("userId"), userId);
         });
     }

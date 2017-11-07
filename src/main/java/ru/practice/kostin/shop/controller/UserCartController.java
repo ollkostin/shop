@@ -3,7 +3,7 @@ package ru.practice.kostin.shop.controller;
 import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import ru.practice.kostin.shop.exception.NotAllowedException;
 import ru.practice.kostin.shop.security.CustomUserDetails;
@@ -22,9 +22,7 @@ public class UserCartController {
      * @return list of products
      */
     @GetMapping("/")
-    public ResponseEntity getCart() {
-        CustomUserDetails user = (CustomUserDetails)
-                (SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+    public ResponseEntity getCart(@AuthenticationPrincipal CustomUserDetails user) {
         return ok().body(cartService.getProductsInCart(user.getId()));
     }
 
@@ -36,9 +34,7 @@ public class UserCartController {
      * @throws NotFoundException if product was not found
      */
     @PutMapping("/product/{productId}")
-    public ResponseEntity addProductToCart(@PathVariable("productId") Integer productId) throws NotFoundException {
-        CustomUserDetails user = (CustomUserDetails)
-                (SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+    public ResponseEntity addProductToCart(@PathVariable("productId") Integer productId, @AuthenticationPrincipal CustomUserDetails user) throws NotFoundException {
         cartService.addProductToCart(productId, user.getId());
         return ok().build();
     }
@@ -51,9 +47,7 @@ public class UserCartController {
      * @throws NotAllowedException if cart does not contain specified product
      */
     @DeleteMapping("/product/{productId}")
-    public ResponseEntity removeProductFromCart(@PathVariable("productId") Integer productId) throws NotAllowedException {
-        CustomUserDetails user = (CustomUserDetails)
-                (SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+    public ResponseEntity removeProductFromCart(@PathVariable("productId") Integer productId, @AuthenticationPrincipal CustomUserDetails user) throws NotAllowedException {
         cartService.removeProductFromCart(productId, user.getId());
         return ok().build();
     }
@@ -64,9 +58,7 @@ public class UserCartController {
      * @return http status OK
      */
     @DeleteMapping("/")
-    public ResponseEntity clearCart() {
-        CustomUserDetails user = (CustomUserDetails)
-                (SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+    public ResponseEntity clearCart(@AuthenticationPrincipal CustomUserDetails user) {
         cartService.clearCart(user.getId());
         return ok().build();
     }
