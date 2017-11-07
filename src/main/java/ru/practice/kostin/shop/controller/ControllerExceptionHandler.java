@@ -30,7 +30,7 @@ public class ControllerExceptionHandler {
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorDTO internalServerException(Exception ex) {
-        LOGGER.error(ex.getMessage());
+        LOGGER.error("Error : [" + ex.getClass().getName() + "]", ex);
         return new ErrorDTO("500", ex.getMessage());
     }
 
