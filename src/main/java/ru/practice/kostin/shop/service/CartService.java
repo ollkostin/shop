@@ -62,20 +62,23 @@ public class CartService {
     }
 
     /**
-     * Removes product from cart by id
+     * Removes product copy from cart by id.
+     * If removeAllCopies is true, removes all copies.
      *
-     * @param productId product id
-     * @param userId    user id
+     * @param productId       product id
+     * @param userId          user id
+     * @param removeAllCopies flag  remove all copies
      * @throws NotAllowedException no product in cart
      */
     @Transactional
-    public void removeProductFromCart(Integer productId, Integer userId) throws NotAllowedException {
+    public void removeProductFromCart(Integer productId, Integer userId, Boolean removeAllCopies) throws NotAllowedException {
         CartId cartId = new CartId(userId, productId);
         CartEntity cart = cartRepository.findOne(cartId);
         if (cart == null) {
             throw new NotAllowedException("Your cart does not contain this product");
         }
-        if (cart.getCount() == 1) {
+        Optional<Boolean> oRemoveAllCopies = Optional.ofNullable(removeAllCopies);
+        if ((oRemoveAllCopies.isPresent() && oRemoveAllCopies.get()) || cart.getCount() == 1) {
             cartRepository.delete(cartId);
         } else {
             int count = cart.getCount();

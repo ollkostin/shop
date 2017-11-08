@@ -1,7 +1,7 @@
 let totalPrice = 0;
 
 $(document).ready(function () {
-    getCart(showCart, onErrorLoad);
+    getCart('',showCart, onErrorAlert);
 });
 
 function showCart(productList) {

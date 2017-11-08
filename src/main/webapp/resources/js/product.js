@@ -1,16 +1,16 @@
 let productId = window.location.href.substr(window.location.href.lastIndexOf('/') + 1);
 $(document).ready(function () {
-    getCartOnProductPage(function (productList) {
+    getCart('../', function (productList) {
         onSuccessLoadCart(productList);
         getProduct(productId, onSuccessLoadProduct, onErrorLoadProduct);
-    }, onErrorLoad);
+    }, onErrorAlert);
 });
 
 function onSuccessLoadProduct(product) {
     $('#product-name').text(product['name']);
     $('#product-description').text(product['description']);
     $('#product-price').text(product['price']);
-    $('#add-cart-btn-div').append(cartButtonOrAlreadyInCartMessage(product["id"], addToUserCartOnProductPage));
+    $('#add-cart-btn-div').append(addToOrRemoveFromCartButton(product["id"], addToCartOnProductPageCb, removeFromCartOnProductPageCb));
     $('#product-photos').append(buildProductPhotosBlock(product));
 }
 
@@ -47,15 +47,18 @@ function buildCarouselItem(img, index) {
     return div;
 }
 
-function addToUserCartOnProductPage() {
-    addProductToCart('../api/cart/product/' + productId,
-        function (resp) {
-            onSuccessAddToCart(resp, productId);
-        },
-        onErrorLoad
-    );
+function addToCartOnProductPageCb() {
+    addToCart(productId, '../', onAdd, onErrorAlert);
 }
 
-function getCartOnProductPage(success, error) {
-    getUserCart('../api/cart/', success, error);
+function onAdd(resp) {
+    onSuccessAddToCart(resp, productId, removeFromCartOnProductPageCb);
+}
+
+function onRemove(resp) {
+    onSuccessRemoveFromCart(resp, productId, addToCartOnProductPageCb);
+}
+
+function removeFromCartOnProductPageCb() {
+    removeFromCart(productId, '../', true, onRemove, onErrorAlert)
 }

@@ -1,8 +1,8 @@
 $(document).ready(function () {
-    getCart(function (productList) {
+    getCart('', function (productList) {
         onSuccessLoadCart(productList);
         getProducts(currentPage, currentSize, showProducts);
-    }, onErrorLoad);
+    }, onErrorAlert);
 });
 
 function showProducts(productList) {
@@ -18,7 +18,7 @@ function showProducts(productList) {
         );
         tr.append(buildTableData(buildProductLink(product)));
         tr.append(buildTableData(product['price']));
-        tr.append(buildTableData(cartButtonOrAlreadyInCartMessage(product['id'], addToCartProductListPageButton)));
+        tr.append(buildTableData(addToOrRemoveFromCartButton(product['id'], addToCartProductListPageCb, removeFromCartProductListPageCb)));
         products.append(tr);
     });
 }
@@ -33,12 +33,27 @@ function onSizeChange() {
     }
 }
 
-function addToCartProductListPageButton() {
+function addToCartProductListPageCb() {
     let currentRow = $(this).closest("tr");
     let productId = currentRow.find("td:eq(0)").text();
-    addProductToCart('api/cart/product/' + productId,
+    addToCart(productId, '',
         function (resp) {
-            onSuccessAddToCart(resp, productId);
-        },
-        onErrorLoad);
+            onAdd(resp, productId);
+        }, onErrorAlert);
+}
+
+function onAdd(resp, productId) {
+    onSuccessAddToCart(resp, productId, removeFromCartProductListPageCb);
+}
+
+function onRemove(resp, productId) {
+    onSuccessRemoveFromCart(resp, productId, addToCartProductListPageCb);
+}
+
+function removeFromCartProductListPageCb() {
+    let currentRow = $(this).closest("tr");
+    let productId = currentRow.find("td:eq(0)").text();
+    removeFromCart(productId, '', true, function (resp) {
+        onRemove(resp, productId);
+    }, onErrorAlert);
 }

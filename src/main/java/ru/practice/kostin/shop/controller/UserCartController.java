@@ -47,8 +47,10 @@ public class UserCartController {
      * @throws NotAllowedException if cart does not contain specified product
      */
     @DeleteMapping("/product/{productId}")
-    public ResponseEntity removeProductFromCart(@PathVariable("productId") Integer productId, @AuthenticationPrincipal CustomUserDetails user) throws NotAllowedException {
-        cartService.removeProductFromCart(productId, user.getId());
+    public ResponseEntity removeProductFromCart(@PathVariable("productId") Integer productId,
+                                                @RequestParam(value = "removeAll", required = false) Boolean removeAll,
+                                                @AuthenticationPrincipal CustomUserDetails user) throws NotAllowedException {
+        cartService.removeProductFromCart(productId, user.getId(), removeAll);
         return ok().build();
     }
 

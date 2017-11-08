@@ -1,7 +1,7 @@
 let totalPrice = 0;
 
 $(document).ready(function () {
-    getCart(showCart, onErrorLoad)
+    getCart('', showCart, onErrorAlert)
 });
 
 function showCart(productList) {
@@ -18,7 +18,7 @@ function showCart(productList) {
             );
             tr.append(buildTableData(buildProductLink(product)));
             tr.append(buildTableData(product['price']));
-            tr.append(buildProductCountElem(product['count']));
+            tr.append(buildProductCountElem(product));
             products.append(tr);
             totalPrice += product['count'] * product['price'];
         });
@@ -28,41 +28,54 @@ function showCart(productList) {
     }
 }
 
-function buildProductCountElem(count) {
+function buildProductCountElem(product) {
     let td = $('<td></td>');
+    let divCount = $('<div class="col-xs-2"></div>');
     let increaseBtn = $('<button class="btn btn-sm btn-default">+</button>');
-    let decreaseBtn = $('<button class="btn btn-sm btn-default">-</button>');
-    let countText = $('<p>' + count + '</p>')
     increaseBtn.click(increaseProductCount);
+    divCount.append(increaseBtn);
+    let countText = $('<p>' + product['count'] + '</p>');
+    divCount.append(countText);
+    let decreaseBtn = $('<button class="btn btn-sm btn-default">-</button>');
+    divCount.append(decreaseBtn);
     decreaseBtn.click(decreaseProductCount);
-    td.append(increaseBtn);
-    td.append(countText);
-    td.append(decreaseBtn);
+    let divDel = $('<div class="col-xs-2"></div>');
+    divDel.append(removeFromCartButton(product['id'], deleteProductFromCart));
+    td.append(divCount, divDel);
     return td;
 }
 
 function increaseProductCount() {
     let currentRow = $(this).closest("tr");
     let productId = currentRow.find("td:eq(0)").text();
-    addProductToUserCart(productId, function (resp) {
+    addToCart(productId, '',
+        function (resp) {
             location.reload();
         },
-        onErrorLoad
+        onErrorAlert
     );
-}
-
-function addProductToUserCart(productId, success, error) {
-    addProductToCart('api/cart/product/' + productId, success, error);
 }
 
 function decreaseProductCount() {
     let currentRow = $(this).closest("tr");
     let productId = currentRow.find("td:eq(0)").text();
-    removeProductFromCart(productId, function (resp) {
-        location.reload();
-    }, function (resp) {
-        alert(resp.responseJSON.message);
-    })
+    removeFromCart(productId, '', null,
+        function (resp) {
+            location.reload();
+        },
+        onErrorAlert
+    );
+}
+
+function deleteProductFromCart() {
+    let currentRow = $(this).closest("tr");
+    let productId = currentRow.find("td:eq(0)").text();
+    removeFromCart(productId,'', true,
+        function (resp) {
+            location.reload();
+        },
+        onErrorAlert
+    );
 }
 
 function onClickClearCart() {
