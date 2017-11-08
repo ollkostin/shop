@@ -23,10 +23,19 @@ function getProducts(page, size, success, error) {
     });
 }
 
-function getProduct(id, success , error) {
+function getProduct(id, success, error) {
     $.ajax({
         type: 'GET',
         url: '../api/products/' + id,
+        success: success,
+        error: error
+    });
+}
+
+function deleteProduct(productId, prefix, success, error) {
+    $.ajax({
+        type: 'DELETE',
+        url: prefix + 'api/products/' + productId,
         success: success,
         error: error
     });

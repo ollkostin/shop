@@ -6,10 +6,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
+import ru.practice.kostin.shop.exception.NotAllowedException;
 import ru.practice.kostin.shop.service.ProductService;
 import ru.practice.kostin.shop.service.dto.product.ProductShortDTO;
 
@@ -44,6 +43,13 @@ public class ProductController {
     @GetMapping("/{id}")
     public ResponseEntity getProduct(@PathVariable("id") Integer productId) throws NotFoundException {
         return ok(productService.getProduct(productId));
+    }
+
+    @DeleteMapping("/{id}")
+    @PreAuthorize(value = "hasRoles('VENDOR,ADMIN')")
+    public ResponseEntity deleteProduct(@PathVariable("id") Integer productId) throws NotFoundException, NotAllowedException {
+        productService.deleteProduct(productId);
+        return ok().build();
     }
 
     @Autowired

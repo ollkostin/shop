@@ -30,7 +30,7 @@ public class OrderService {
      * @param userId   user id
      * @param orderDTO order information
      * @return order id
-     * @throws IllegalArgumentException
+     * @throws IllegalArgumentException if order info is not correct
      */
     @Transactional
     public Integer createOrder(Integer userId, OrderDTO orderDTO) throws IllegalArgumentException {
@@ -56,7 +56,7 @@ public class OrderService {
         return order.getId();
     }
 
-    public void validateOrderDTO(OrderDTO orderDTO) throws IllegalArgumentException {
+    private void validateOrderDTO(OrderDTO orderDTO) throws IllegalArgumentException {
         if (orderDTO.getAddress().isEmpty() || orderDTO.getAddress().length() > ADDRESS_LENGTH) {
             throw new IllegalArgumentException("Address cannot be empty or contain more than " + ADDRESS_LENGTH + " characters");
         }

@@ -31,6 +31,7 @@
             <div>
                 <p id="product-description"></p>
                 <div id="add-cart-btn-div"></div>
+                <div id="remove-product-btn"></div>
             </div>
         </div>
     </div>

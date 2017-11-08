@@ -3,10 +3,16 @@ let totalPrice = 0;
 $(document).ready(function () {
     $('#next-page').click(nextPage);
     $('#prev-page').click(previousPage);
-    getCart(currentCartPage, currentCartPageSize, '', showCart, onErrorAlert);
-    getTotalPrice(function (totalPrice) {
-        $('#total-price').val(totalPrice);
-    }, onErrorAlert);
+    getCart(currentCartPage, currentCartPageSize, '', function (resp) {
+            showCart(resp);
+            if (resp && resp.content.length !== 0) {
+                getTotalPrice(function (totalPrice) {
+                    $('#total-price').val(totalPrice);
+                }, onErrorAlert);
+            }
+        }, onErrorAlert
+    );
+
 });
 
 function showCart(productPage) {

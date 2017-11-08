@@ -1,6 +1,6 @@
 let productId = window.location.href.substr(window.location.href.lastIndexOf('/') + 1);
 $(document).ready(function () {
-    getProductInCartIds( '../', function (productIdList) {
+    getProductInCartIds('../', function (productIdList) {
         onSuccessLoadCart(productIdList);
         getProduct(productId, onSuccessLoadProduct, onErrorLoadProduct);
     }, onErrorAlert);
@@ -12,6 +12,7 @@ function onSuccessLoadProduct(product) {
     $('#product-price').text(product['price']);
     $('#add-cart-btn-div').append(addToOrRemoveFromCartButton(product["id"], addToCartOnProductPageCb, removeFromCartOnProductPageCb));
     $('#product-photos').append(buildProductPhotosBlock(product));
+    $('#remove-product-btn').append(removeProductButton(product['id'], onRemoveProduct));
 }
 
 function onErrorLoadProduct(resp) {
@@ -61,4 +62,11 @@ function onRemove(resp) {
 
 function removeFromCartOnProductPageCb() {
     removeFromCart(productId, '../', true, onRemove, onErrorAlert)
+}
+
+function onRemoveProduct() {
+    deleteProduct(productId, '../', function (resp) {
+        window.location.href = window.location.href.substr(0,(window.location.href.lastIndexOf('/')));
+        alert('Product was deleted');
+    }, onErrorAlert);
 }

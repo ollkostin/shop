@@ -22,6 +22,7 @@ function showProducts(productPage) {
         tr.append(buildTableData(buildProductLink(product)));
         tr.append(buildTableData(product['price']));
         tr.append(buildTableData(addToOrRemoveFromCartButton(product['id'], addToCartProductListPageCb, removeFromCartProductListPageCb)));
+        tr.append(buildTableData(removeProductButton(product['id'], onRemoveProduct)));
         products.append(tr);
     });
 }
@@ -67,4 +68,13 @@ function nextPage() {
 
 function previousPage() {
     getProducts(currentProductPage - 1, currentProductPageSize, showProducts);
+}
+
+function onRemoveProduct() {
+    let currentRow = $(this).closest("tr");
+    let productId = currentRow.find("td:eq(0)").text();
+    deleteProduct(productId, '', function (resp) {
+        currentRow.remove();
+        alert('Product was deleted');
+    }, onErrorAlert);
 }
