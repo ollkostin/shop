@@ -5,8 +5,8 @@
     <#include "resources/ftl/head.ftl">
     <script src="<@spring.url '/resources/js/common.js'/>"></script>
     <script src="<@spring.url '/resources/js/api-product.js'/>"></script>
-    <script src="<@spring.url '/resources/js/products.js'/>"></script>
     <script src="<@spring.url '/resources/js/api-cart.js'/>"></script>
+    <script src="<@spring.url '/resources/js/products.js'/>"></script>
 </head>
 <body>
 <div class="container">
@@ -32,11 +32,11 @@
     <div class="text-center">
         <button id="prev-page"
                 class="btn btn-primary"
-                onclick="getProducts(currentPage - 1, currentSize ,onSuccessLoadProducts)">
+                onclick="getProducts(currentPage - 1, currentSize, showProducts)">
             Previous
         </button>
         <button id="next-page" class="btn btn-primary"
-                onclick="getProducts(currentPage + 1, currentSize ,onSuccessLoadProducts)">
+                onclick="getProducts(currentPage + 1, currentSize, showProducts)">
             Next
         </button>
     </div>

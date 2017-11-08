@@ -1,12 +1,8 @@
-let productListIds = [];
-
 $(document).ready(function () {
-    getUserCart(function (productList) {
-        productList.forEach(product => {
-            productListIds.push(product['id']);
-        })
-    });
-    getProducts(currentPage, currentSize, onSuccessLoadProducts);
+    getCart(function (productList) {
+        onSuccessLoadCart(productList);
+        getProducts(currentPage, currentSize, showProducts);
+    }, onErrorLoad);
 });
 
 function showProducts(productList) {
@@ -22,7 +18,7 @@ function showProducts(productList) {
         );
         tr.append(buildTableData(buildProductLink(product)));
         tr.append(buildTableData(product['price']));
-        tr.append(buildTableData(cartButtonOrAlreadyInCartMessage(product['id'])));
+        tr.append(buildTableData(cartButtonOrAlreadyInCartMessage(product['id'], addToCartProductListPageButton)));
         products.append(tr);
     });
 }
@@ -33,10 +29,16 @@ function onSizeChange() {
     let newSize = sizeSelect.options[sizeSelect.selectedIndex].value;
     if (currentSize !== newSize) {
         currentSize = newSize;
-        getProducts(currentPage, currentSize, onSuccessLoadProducts)
+        getProducts(currentPage, currentSize, showProducts)
     }
 }
 
-function onSuccessLoadProducts(resp) {
-    showProducts(resp);
+function addToCartProductListPageButton() {
+    let currentRow = $(this).closest("tr");
+    let productId = currentRow.find("td:eq(0)").text();
+    addProductToCart('api/cart/product/' + productId,
+        function (resp) {
+            onSuccessAddToCart(resp, productId);
+        },
+        onErrorLoad);
 }

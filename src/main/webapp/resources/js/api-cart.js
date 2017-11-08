@@ -1,16 +1,20 @@
-function getUserCart(success, error) {
+function getCart(success, error) {
+    getUserCart('api/cart/', success, error)
+}
+
+function getUserCart(url, success, error) {
     $.ajax({
         type: 'GET',
-        url: 'api/cart/',
+        url: url,
         success: success,
         error: error
     })
 }
 
-function addProductToCart(productId, success, error) {
+function addProductToCart(url, success, error) {
     $.ajax({
         type: 'PUT',
-        url: 'api/cart/product/' + productId,
+        url: url,
         success: success,
         error: error
     })

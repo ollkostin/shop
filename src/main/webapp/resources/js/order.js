@@ -1,9 +1,7 @@
 let totalPrice = 0;
 
 $(document).ready(function () {
-    getUserCart(showCart, function (resp) {
-        alert(resp.responseJSON.message);
-    })
+    getCart(showCart, onErrorLoad);
 });
 
 function showCart(productList) {
@@ -23,5 +21,4 @@ function showCart(productList) {
         totalPrice += product['count'] * product['price'];
     });
     $('#total-price').val(totalPrice);
-
 }

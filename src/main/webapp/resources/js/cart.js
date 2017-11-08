@@ -1,9 +1,7 @@
 let totalPrice = 0;
 
 $(document).ready(function () {
-    getUserCart(showCart, function (resp) {
-        alert(resp.responseJSON.message);
-    })
+    getCart(showCart, onErrorLoad)
 });
 
 function showCart(productList) {
@@ -46,11 +44,15 @@ function buildProductCountElem(count) {
 function increaseProductCount() {
     let currentRow = $(this).closest("tr");
     let productId = currentRow.find("td:eq(0)").text();
-    addProductToCart(productId, function (resp) {
-        location.reload();
-    }, function (resp) {
-        alert(resp.responseJSON.message);
-    })
+    addProductToUserCart(productId, function (resp) {
+            location.reload();
+        },
+        onErrorLoad
+    );
+}
+
+function addProductToUserCart(productId, success, error) {
+    addProductToCart('api/cart/product/' + productId, success, error);
 }
 
 function decreaseProductCount() {

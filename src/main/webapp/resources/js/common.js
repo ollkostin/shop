@@ -1,3 +1,5 @@
+let productListIds = [];
+
 let alreadyInCartMsg = function () {
     return $('<p>Already in cart</p>');
 };
@@ -16,9 +18,9 @@ function clearChildNodes(element) {
     element.empty()
 }
 
-function cartButton(productId) {
+function cartButton(productId, cb) {
     let button = $('<button id="cart-btn-' + productId + '" class="btn btn-success">Add to cart</button>');
-    button.click(addToCart);
+    button.click(cb);
     return button;
 }
 
@@ -29,25 +31,26 @@ function buildImg(pathToPhoto, width, height) {
     return img;
 }
 
-function addToCart() {
-    let currentRow = $(this).closest("tr");
-    let productId = currentRow.find("td:eq(0)").text();
-    addProductToCart(productId, function (resp) {
-        $('#cart-btn-' + productId).replaceWith(alreadyInCartMsg);
-    }, function (resp) {
-        alert(resp.responseJSON.message);
-    })
-}
-
-function cartButtonOrAlreadyInCartMessage(productId) {
+function cartButtonOrAlreadyInCartMessage(productId, cb) {
     if (productListIds.includes(productId)) {
         return alreadyInCartMsg;
-    }
-    else {
-        return cartButton(productId);
+    } else {
+        return cartButton(productId, cb);
     }
 }
 
 function buildProductLink(product) {
     return $('<a href="products/' + product['id'] + '">' + product['name'] + '</a>');
+}
+
+function onSuccessAddToCart(resp, productId) {
+    $('#cart-btn-' + productId).replaceWith(alreadyInCartMsg);
+}
+
+function onSuccessLoadCart(productList) {
+    productListIds = productList.map(product => product['id'])
+}
+
+function onErrorLoad(resp) {
+    alert('code: ' + resp.responseJSON.code + '\n Message: ' + resp.responseJSON.error);
 }

@@ -5,8 +5,8 @@
     <#include "resources/ftl/head.ftl">
     <script src="<@spring.url '/resources/js/common.js'/>"></script>
     <script src="<@spring.url '/resources/js/api-product.js'/>"></script>
-    <script src="<@spring.url '/resources/js/product.js'/>"></script>
     <script src="<@spring.url '/resources/js/api-cart.js'/>"></script>
+    <script src="<@spring.url '/resources/js/product.js'/>"></script>
 </head>
 <body>
 <div class="container">
@@ -30,7 +30,7 @@
             </span>
             <div>
                 <p id="product-description"></p>
-                <button id="cart-btn" class="btn btn-success" onclick="productPageCartButton()">Add to cart</button>
+                <div id="add-cart-btn-div"></div>
             </div>
         </div>
     </div>

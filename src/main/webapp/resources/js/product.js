@@ -1,21 +1,25 @@
 let productId = window.location.href.substr(window.location.href.lastIndexOf('/') + 1);
 $(document).ready(function () {
-    getProduct(productId, onSuccessLoadProduct, function (resp) {
-        if (resp.status === 404) {
-            clearChildNodes($('#product'));
-            $('#product').append("<h3>"+ resp.responseJSON.error +"</h3>")
-        }
-    });
+    getCartOnProductPage(function (productList) {
+        onSuccessLoadCart(productList);
+        getProduct(productId, onSuccessLoadProduct, onErrorLoadProduct);
+    }, onErrorLoad);
 });
-
 
 function onSuccessLoadProduct(product) {
     $('#product-name').text(product['name']);
     $('#product-description').text(product['description']);
     $('#product-price').text(product['price']);
+    $('#add-cart-btn-div').append(cartButtonOrAlreadyInCartMessage(product["id"], addToUserCartOnProductPage));
     $('#product-photos').append(buildProductPhotosBlock(product));
 }
 
+function onErrorLoadProduct(resp) {
+    if (resp.status === 404) {
+        clearChildNodes($('#product'));
+        $('#product').append("<h3>" + resp.responseJSON.error + "</h3>")
+    }
+}
 
 function buildProductPhotosBlock(product) {
     let photos = [];
@@ -34,24 +38,24 @@ function buildProductPhotosBlock(product) {
     return photos;
 }
 
-function buildCarouselItem(img ,index) {
+function buildCarouselItem(img, index) {
     let div = $('<div class="item"></div>');
-    if (Number(index) === 0){
+    if (Number(index) === 0) {
         div.addClass("active")
     }
     div.append(img);
     return div;
 }
 
-function productPageCartButton() {
-    $.ajax({
-        type: 'PUT',
-        url: '../api/cart/product/' + productId,
-        success:  function (resp) {
-            $('#cart-btn').replaceWith(alreadyInCartMsg);
+function addToUserCartOnProductPage() {
+    addProductToCart('../api/cart/product/' + productId,
+        function (resp) {
+            onSuccessAddToCart(resp, productId);
         },
-        error: function (resp) {
-            alert(resp.responseJSON.message);
-        }
-    });
+        onErrorLoad
+    );
+}
+
+function getCartOnProductPage(success, error) {
+    getUserCart('../api/cart/', success, error);
 }
