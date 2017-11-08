@@ -2,6 +2,7 @@ package ru.practice.kostin.shop.controller;
 
 import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
@@ -11,8 +12,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.practice.kostin.shop.service.ProductService;
 import ru.practice.kostin.shop.service.dto.product.ProductShortDTO;
-
-import java.util.List;
 
 import static org.springframework.http.ResponseEntity.ok;
 
@@ -30,7 +29,7 @@ public class ProductController {
      */
     @GetMapping("/")
     public ResponseEntity getProducts(@PageableDefault Pageable pageable) {
-        List<ProductShortDTO> products = productService.getProducts(pageable);
+        Page<ProductShortDTO> products = productService.getProducts(pageable);
         return ok(products);
     }
 

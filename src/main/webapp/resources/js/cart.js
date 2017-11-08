@@ -1,14 +1,33 @@
 let totalPrice = 0;
-
+let first;
+let last;
+let totalPages;
 $(document).ready(function () {
-    getCart('', showCart, onErrorAlert)
+    $('#next-page').click(nextPage);
+    $('#prev-page').click(previousPage);
+    getCart(currentCartPage, currentCartPageSize, '', response => {
+        if (response.numberOfElements > 0) {
+            getTotalPrice(onSuccessLoadTotalPrice, onErrorAlert);
+        }
+        showCart(response);
+    }, onErrorAlert);
 });
 
-function showCart(productList) {
-    if (productList.length > 0) {
+function onSuccessLoadTotalPrice(resp) {
+    totalPrice = resp;
+    $('#total-price').text(totalPrice);
+}
+
+function showCart(productPage) {
+    if (productPage.numberOfElements > 0) {
+        first = productPage.first;
+        last = productPage.last;
+        totalPages = productPage.totalPages;
         $('#empty-cart').hide();
+        setPagination(productPage);
         let products = $('#products');
-        productList.forEach(product => {
+        clearChildNodes(products);
+        productPage.content.forEach(product => {
             let tr = $('<tr></tr>');
             tr.append(buildTableData(product['id']));
             tr.append(
@@ -20,11 +39,10 @@ function showCart(productList) {
             tr.append(buildTableData(product['price']));
             tr.append(buildProductCountElem(product));
             products.append(tr);
-            totalPrice += product['count'] * product['price'];
         });
-        $('#total-price').text(totalPrice);
     } else {
         $('#cart').hide();
+        $('#size-select').hide();
     }
 }
 
@@ -108,8 +126,21 @@ function onDecreaseCount(resp, row) {
     let price = row.find("td:eq(3)").text();
     totalPrice -= Number(price);
     $('#total-price').text(totalPrice);
+    changePageOnDeleteLast();
+
+}
+
+function changePageOnDeleteLast() {
     if ($('#products tr').length === 0) {
-        onClear();
+        if (last && first) {
+            onClear();
+        } else if (first) {
+            getCart(currentCartPage, currentCartPageSize, '', showCart, onErrorAlert);
+        } else if (last) {
+            getCart(currentCartPage - 1, currentCartPageSize, '', showCart, onErrorAlert);
+        }
+    } else if (first && totalPages != 1) {
+        getCart(currentCartPage, currentCartPageSize, '', showCart, onErrorAlert);
     }
 }
 
@@ -120,10 +151,29 @@ function onRemove(resp, row) {
     totalPrice -= Number(price) * Number(count);
     $('#total-price').text(totalPrice);
     row.remove();
+    changePageOnDeleteLast()
 }
 
 function onClear() {
+    $('#size-select').hide();
     $('#cart').hide();
     clearChildNodes($('#cart'));
-    $('#empty-cart').show()
+    $('#empty-cart').show();
+}
+
+function nextPage() {
+    getCart(currentCartPage + 1, currentCartPageSize, '', showCart, onErrorAlert);
+}
+
+function previousPage() {
+    getCart(currentCartPage - 1, currentCartPageSize, '', showCart, onErrorAlert);
+}
+
+function onSizeChange() {
+    let sizeSelect = document.getElementById("size-select");
+    let newSize = sizeSelect.options[sizeSelect.selectedIndex].value;
+    if (currentCartPageSize !== newSize) {
+        currentCartPageSize = newSize;
+        getCart(currentCartPage, currentCartPageSize, '', showCart, onErrorAlert);
+    }
 }

@@ -11,7 +11,7 @@
 <div class="container">
 <#include "resources/ftl/navbar.ftl">
     <h1>Your cart</h1>
-    <div id="empty-cart"> Cart is empty</div>
+    <div id="empty-cart" class="text-center">Cart is empty</div>
     <div id="cart">
         <#include "resources/ftl/cart-table.ftl">
         <div class="text-right">

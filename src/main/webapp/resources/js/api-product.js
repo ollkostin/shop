@@ -1,5 +1,5 @@
-let currentPage = 0;
-let currentSize = 10;
+let currentProductPage = 0;
+let currentProductPageSize = 10;
 
 
 function getProducts(page, size, success, error) {
@@ -16,8 +16,8 @@ function getProducts(page, size, success, error) {
         url: 'api/products/' + options,
         success: function (response) {
             success(response);
-            currentPage = page;
-            currentSize = size;
+            currentProductPage = page;
+            currentProductPageSize = size;
         },
         error: error
     });

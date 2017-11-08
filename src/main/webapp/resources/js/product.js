@@ -1,7 +1,7 @@
 let productId = window.location.href.substr(window.location.href.lastIndexOf('/') + 1);
 $(document).ready(function () {
-    getCart('../', function (productList) {
-        onSuccessLoadCart(productList);
+    getProductInCartIds( '../', function (productIdList) {
+        onSuccessLoadCart(productIdList);
         getProduct(productId, onSuccessLoadProduct, onErrorLoadProduct);
     }, onErrorAlert);
 });

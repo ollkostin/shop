@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <title>Product list</title>
-    <#include "resources/ftl/head.ftl">
+<#include "resources/ftl/head.ftl">
     <script src="<@spring.url '/resources/js/common.js'/>"></script>
     <script src="<@spring.url '/resources/js/api-product.js'/>"></script>
     <script src="<@spring.url '/resources/js/api-cart.js'/>"></script>
@@ -10,7 +10,7 @@
 </head>
 <body>
 <div class="container">
-    <#include "resources/ftl/navbar.ftl">
+<#include "resources/ftl/navbar.ftl">
     <h1>Products</h1>
     <select id="size-select"
             onchange="onSizeChange()">
@@ -29,17 +29,7 @@
         </thead>
         <tbody id="products"></tbody>
     </table>
-    <div class="text-center">
-        <button id="prev-page"
-                class="btn btn-primary"
-                onclick="getProducts(currentPage - 1, currentSize, showProducts)">
-            Previous
-        </button>
-        <button id="next-page" class="btn btn-primary"
-                onclick="getProducts(currentPage + 1, currentSize, showProducts)">
-            Next
-        </button>
-    </div>
+<#include "resources/ftl/pagination/pagination-buttons.ftl"/>
 </div>
 </body>
 </html>

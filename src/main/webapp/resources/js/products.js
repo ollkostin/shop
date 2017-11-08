@@ -1,14 +1,17 @@
 $(document).ready(function () {
-    getCart('', function (productList) {
+    $('#next-page').click(nextPage);
+    $('#prev-page').click(previousPage);
+    getProductInCartIds('', function (productList) {
         onSuccessLoadCart(productList);
-        getProducts(currentPage, currentSize, showProducts);
+        getProducts(currentProductPage, currentProductPageSize, showProducts);
     }, onErrorAlert);
 });
 
-function showProducts(productList) {
+function showProducts(productPage) {
     let products = $('#products');
     clearChildNodes(products);
-    productList.forEach(product => {
+    setPagination(productPage);
+    productPage.content.forEach(product => {
         let tr = $('<tr></tr>');
         tr.append(buildTableData(product['id']));
         tr.append(
@@ -27,9 +30,9 @@ function showProducts(productList) {
 function onSizeChange() {
     let sizeSelect = document.getElementById("size-select");
     let newSize = sizeSelect.options[sizeSelect.selectedIndex].value;
-    if (currentSize !== newSize) {
-        currentSize = newSize;
-        getProducts(currentPage, currentSize, showProducts)
+    if (currentProductPageSize !== newSize) {
+        currentProductPageSize = newSize;
+        getProducts(currentProductPage, currentProductPageSize, showProducts)
     }
 }
 
@@ -56,4 +59,12 @@ function removeFromCartProductListPageCb() {
     removeFromCart(productId, '', true, function (resp) {
         onRemove(resp, productId);
     }, onErrorAlert);
+}
+
+function nextPage() {
+    getProducts(currentProductPage + 1, currentProductPageSize, showProducts);
+}
+
+function previousPage() {
+    getProducts(currentProductPage - 1, currentProductPageSize, showProducts);
 }

@@ -1,24 +1,46 @@
 let totalPrice = 0;
 
 $(document).ready(function () {
-    getCart('',showCart, onErrorAlert);
+    $('#next-page').click(nextPage);
+    $('#prev-page').click(previousPage);
+    getCart(currentCartPage, currentCartPageSize, '', showCart, onErrorAlert);
+    getTotalPrice(function (totalPrice) {
+        $('#total-price').val(totalPrice);
+    }, onErrorAlert);
 });
 
-function showCart(productList) {
+function showCart(productPage) {
     let products = $('#products');
-    productList.forEach(product => {
+    setPagination(productPage);
+    clearChildNodes(products);
+    productPage.content.forEach(product => {
         let tr = $('<tr></tr>');
         tr.append(buildTableData(product['id']));
         tr.append(
             buildTableData(
-                buildImg('api/products/' + product['id'] + '/photos/' + product['pathToPhoto'], 50, 50)
+                buildImg('api/products/' + product['id'] + '/photos/' + product['pathToPhoto'], 35, 35)
             )
         );
         tr.append(buildTableData(product['name']));
         tr.append(buildTableData(product['price']));
         tr.append(buildTableData(product['count']));
         products.append(tr);
-        totalPrice += product['count'] * product['price'];
     });
-    $('#total-price').val(totalPrice);
+}
+
+function onSizeChange() {
+    let sizeSelect = document.getElementById("size-select");
+    let newSize = sizeSelect.options[sizeSelect.selectedIndex].value;
+    if (currentCartPageSize !== newSize) {
+        currentCartPageSize = newSize;
+        getCart(currentCartPage, currentCartPageSize, '', showCart, onErrorAlert);
+    }
+}
+
+function nextPage() {
+    getCart(currentCartPage + 1, currentCartPageSize, '', showCart, onErrorAlert);
+}
+
+function previousPage() {
+    getCart(currentCartPage - 1, currentCartPageSize, '', showCart, onErrorAlert);
 }

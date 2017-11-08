@@ -10,8 +10,7 @@ import ru.practice.kostin.shop.persistence.repository.ProductRepository;
 import ru.practice.kostin.shop.service.dto.product.ProductFullDTO;
 import ru.practice.kostin.shop.service.dto.product.ProductShortDTO;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import javax.transaction.Transactional;
 
 @Service
 public class ProductService {
@@ -23,12 +22,9 @@ public class ProductService {
      *
      * @return list of products
      */
-    public List<ProductShortDTO> getProducts(Pageable pageable) {
-        Page<ProductEntity> productEntities = productRepository.findAll(pageable);
-        return productEntities.getContent()
-                .stream()
-                .map(ProductShortDTO::new)
-                .collect(Collectors.toList());
+    @Transactional
+    public Page<ProductShortDTO> getProducts(Pageable pageable) {
+        return productRepository.findAll(pageable).map(ProductShortDTO::new);
     }
 
     /**
@@ -38,6 +34,7 @@ public class ProductService {
      * @return product
      * @throws NotFoundException no product with specified id
      */
+    @Transactional
     public ProductFullDTO getProduct(Integer productId) throws NotFoundException {
         ProductEntity productEntity = productRepository.findOne(productId);
         if (productEntity == null) {

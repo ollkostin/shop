@@ -37,14 +37,16 @@ function buildProductLink(product) {
 
 function onSuccessAddToCart(resp, productId, deleteCb) {
     $('#add-btn-' + productId).replaceWith(removeFromCartButton(productId, deleteCb));
+    productListIds.push(Number(productId));
 }
 
 function onSuccessRemoveFromCart(resp, productId, deleteCb) {
     $('#remove-btn-' + productId).replaceWith(addToCartButton(productId, deleteCb));
+    productListIds.splice(productListIds.indexOf(Number(productId)),1);
 }
 
-function onSuccessLoadCart(productList) {
-    productListIds = productList.map(product => product['id'])
+function onSuccessLoadCart(resp) {
+    productListIds = resp;
 }
 
 function onErrorAlert(resp) {
@@ -53,6 +55,30 @@ function onErrorAlert(resp) {
 
 function removeFromCartButton(productId, cb) {
     let removeBtn = $('<button id="remove-btn-' + productId + '" class="btn btn-sm btn-danger">Remove from cart</button>');
+    removeBtn.click(cb);
+    return removeBtn;
+}
+
+function setPagination(page) {
+    if (page.totalPages === 1 || page.numberOfElements === 0) {
+        $('#next-page').hide();
+        $('#prev-page').hide();
+    } else {
+        if (page.first) {
+            $('#next-page').show();
+            $('#prev-page').hide();
+        } else if (page.last) {
+            $('#prev-page').show();
+            $('#next-page').hide();
+        } else {
+            $('#prev-page').show();
+            $('#next-page').show();
+        }
+    }
+}
+
+function removeProductButton(productId, cb) {
+    let removeBtn = $('<button id="remove-btn-' + productId + '" class="btn btn-sm btn-danger">Remove product</button>');
     removeBtn.click(cb);
     return removeBtn;
 }
