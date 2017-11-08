@@ -50,7 +50,7 @@ function increaseProductCount() {
     let productId = currentRow.find("td:eq(0)").text();
     addToCart(productId, '',
         function (resp) {
-            location.reload();
+            onIncreaseCount(resp, currentRow);
         },
         onErrorAlert
     );
@@ -61,7 +61,7 @@ function decreaseProductCount() {
     let productId = currentRow.find("td:eq(0)").text();
     removeFromCart(productId, '', null,
         function (resp) {
-            location.reload();
+            onDecreaseCount(resp, currentRow);
         },
         onErrorAlert
     );
@@ -70,9 +70,9 @@ function decreaseProductCount() {
 function deleteProductFromCart() {
     let currentRow = $(this).closest("tr");
     let productId = currentRow.find("td:eq(0)").text();
-    removeFromCart(productId,'', true,
+    removeFromCart(productId, '', true,
         function (resp) {
-            location.reload();
+            onRemove(resp, currentRow);
         },
         onErrorAlert
     );
@@ -80,8 +80,50 @@ function deleteProductFromCart() {
 
 function onClickClearCart() {
     clearCart(function (resp) {
-        location.reload();
+        onClear();
     }, function (resp) {
         alert(resp.responseJSON.message);
     })
+}
+
+function onIncreaseCount(resp, row) {
+    let p = row.find("td:eq(4)").find('p');
+    let count = Number(p.text());
+    ++count;
+    p.text(count);
+    let price = row.find("td:eq(3)").text();
+    totalPrice += Number(price);
+    $('#total-price').text(totalPrice);
+}
+
+function onDecreaseCount(resp, row) {
+    let p = row.find("td:eq(4)").find('p');
+    let count = Number(p.text());
+    --count;
+    if (count === 0) {
+        row.remove()
+    } else {
+        p.text(count);
+    }
+    let price = row.find("td:eq(3)").text();
+    totalPrice -= Number(price);
+    $('#total-price').text(totalPrice);
+    if ($('#products tr').length === 0) {
+        onClear();
+    }
+}
+
+function onRemove(resp, row) {
+    let price = row.find("td:eq(3)").text();
+    let p = row.find("td:eq(4)").find('p');
+    let count = Number(p.text());
+    totalPrice -= Number(price) * Number(count);
+    $('#total-price').text(totalPrice);
+    row.remove();
+}
+
+function onClear() {
+    $('#cart').hide();
+    clearChildNodes($('#cart'));
+    $('#empty-cart').show()
 }
