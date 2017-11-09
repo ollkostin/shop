@@ -17,6 +17,11 @@ public class IndexController {
         return "product";
     }
 
+    @GetMapping("/products/create")
+    public String createProduct() {
+        return "create-product";
+    }
+
     @GetMapping("/cart")
     public String cart() {
         return "cart";

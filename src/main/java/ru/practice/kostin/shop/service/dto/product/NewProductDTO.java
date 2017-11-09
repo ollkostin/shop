@@ -4,9 +4,11 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 @Getter
 @Setter
 public class NewProductDTO extends ProductDTO {
     private String description;
-    private MultipartFile[] photos;
+    private List<MultipartFile> photos;
 }

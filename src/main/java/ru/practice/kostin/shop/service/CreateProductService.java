@@ -64,7 +64,7 @@ public class CreateProductService {
         if (productDTO.getPrice() == null || productDTO.getPrice() < 1) {
             errors.put("price", Collections.singletonList("Price can not be empty or less than one"));
         }
-        if (productDTO.getPhotos() != null && productDTO.getPhotos().length > 0) {
+        if (productDTO.getPhotos() != null && productDTO.getPhotos().size() > 0) {
             for (MultipartFile photo : productDTO.getPhotos()) {
                 List<String> fileErrors = new ArrayList<>();
                 String fileName = photo.getOriginalFilename();
@@ -90,8 +90,8 @@ public class CreateProductService {
      * @param photos  image files
      * @throws IOException
      */
-    private void savePhotos(ProductEntity product, MultipartFile[] photos) throws IOException {
-        if (photos != null && photos.length > 0) {
+    private void savePhotos(ProductEntity product, Collection<MultipartFile> photos) throws IOException {
+        if (photos != null && photos.size() > 0) {
             List<ProductPhotoEntity> productPhotoEntityList = new ArrayList<>();
             for (MultipartFile photo : photos) {
                 String fileName = fileService.saveFile(photo, product.getId());

@@ -40,3 +40,17 @@ function deleteProduct(productId, prefix, success, error) {
         error: error
     });
 }
+
+function createProduct(product, success, error) {
+    $.ajax({
+        type: 'POST',
+        url: '../api/products/create/',
+        data: product,
+        enctype: 'multipart/form-data',
+        processData: false,
+        contentType: false,
+        cache: false,
+        success:success,
+        error:error
+    });
+}
