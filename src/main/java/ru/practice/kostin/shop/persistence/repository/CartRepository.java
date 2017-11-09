@@ -16,7 +16,7 @@ public interface CartRepository extends JpaRepository<CartEntity, CartId>, JpaSp
     @Query("delete from CartEntity c where c.id.userId=:userId")
     void deleteAllByUserId(@Param("userId") Integer userId);
 
-    @Query("select SUM(c.product.price) from CartEntity c where c.id.userId=:userId")
+    @Query("select SUM(c.product.price * c.count) from CartEntity c where c.id.userId=:userId and c.product.id = c.id.productId")
     BigDecimal getTotalPrice(@Param("userId") Integer userId);
 
 }
