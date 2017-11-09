@@ -1,4 +1,4 @@
-$(document).ready(() => {
+$(document).ready(function () {
     $('input[type=file]').click(function () {
         $('input[type=file]').change(function (evt) {
             let filename = evt.target.files[0].name;
@@ -9,15 +9,15 @@ $(document).ready(() => {
 
     });
 
-    $('form#create-product').submit(event => {
+    $('form#create-product').submit(function (event) {
         event.preventDefault();
         clearErrorMessages();
         let productDTO = new FormData($('form#create-product')[0]);
         createProduct(productDTO,
-            resp => {
+            function (resp) {
                 location.href = '../products/' + resp;
             },
-            resp => {
+            function (resp) {
                 let errors = resp.responseJSON;
                 for (let key in errors) {
                     for (let k in errors[key]) {
@@ -31,7 +31,7 @@ $(document).ready(() => {
                 }
             });
     })
-})
+});
 
 let fileIndex = [2, 3, 4, 5];
 let keys = ['name', 'description', 'price'];

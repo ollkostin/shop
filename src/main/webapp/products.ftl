@@ -16,7 +16,6 @@
             onchange="onSizeChange()">
         <option selected>10</option>
         <option>20</option>
-        <option>50</option>
     </select>
     <table class="table">
         <thead>
@@ -33,7 +32,7 @@
                </@security.authorize>>
         </tbody>
     </table>
-<#include "resources/ftl/pagination/pagination-buttons.ftl"/>
+<#include "resources/ftl/pagination-buttons.ftl"/>
 </div>
 </body>
 </html>

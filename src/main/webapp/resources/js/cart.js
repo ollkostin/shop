@@ -5,17 +5,18 @@ let totalPages;
 $(document).ready(function () {
     $('#next-page').click(nextPage);
     $('#prev-page').click(previousPage);
-    getCart(currentCartPage, currentCartPageSize, '', response => {
-        if (response.numberOfElements > 0) {
-            getTotalPrice(onSuccessLoadTotalPrice, onErrorAlert);
-        }
-        showCart(response);
-    }, onErrorAlert);
+    getCart(currentCartPage, currentCartPageSize, '', onSuccessLoadCart, onErrorAlert);
 });
 
-function onSuccessLoadTotalPrice(resp) {
-    totalPrice = resp;
-    $('#total-price').text(totalPrice);
+function onSuccessLoadCart(response) {
+    showCart(response);
+    if (response.numberOfElements > 0) {
+        getTotalPrice(
+            function (resp) {
+                totalPrice = resp;
+                $('#total-price').text(totalPrice)
+            }, onErrorAlert);
+    }
 }
 
 function showCart(productPage) {
@@ -27,7 +28,7 @@ function showCart(productPage) {
         setPagination(productPage);
         let products = $('#products');
         clearChildNodes(products);
-        productPage.content.forEach(product => {
+        productPage.content.forEach(function (product) {
             let tr = $('<tr></tr>');
             tr.append(buildTableData(product['id']));
             tr.append(
@@ -117,27 +118,27 @@ function onDecreaseCount(resp, row) {
     let count = Number(p.text());
     --count;
     if (count === 0) {
-        row.remove()
-        changePageOnDeleteLast();
+        row.remove();
     } else {
         p.text(count);
     }
+    changePageOnDelete();
     let price = row.find("td:eq(3)").text();
     totalPrice -= Number(price);
     $('#total-price').text(totalPrice);
 
 }
 
-function changePageOnDeleteLast() {
+function changePageOnDelete() {
     if ($('#products tr').length === 0) {
         if (last && first) {
-            onClear();
+            onClear(null);
         } else if (first) {
             getCart(currentCartPage, currentCartPageSize, '', showCart, onErrorAlert);
         } else if (last) {
             getCart(currentCartPage - 1, currentCartPageSize, '', showCart, onErrorAlert);
         }
-    } else if (first && totalPages != 1) {
+    } else if ((first && totalPages != 1) || (!first && !last)) {
         getCart(currentCartPage, currentCartPageSize, '', showCart, onErrorAlert);
     }
 }
@@ -149,7 +150,7 @@ function onRemove(resp, row) {
     totalPrice -= Number(price) * Number(count);
     $('#total-price').text(totalPrice);
     row.remove();
-    changePageOnDeleteLast()
+    changePageOnDelete();
 }
 
 function onClear() {
@@ -167,14 +168,3 @@ function previousPage() {
     getCart(currentCartPage - 1, currentCartPageSize, '', showCart, onErrorAlert);
 }
 
-function onSizeChange() {
-    let sizeSelect = document.getElementById("size-select");
-    let newSize = sizeSelect.options[sizeSelect.selectedIndex].value;
-    if (currentCartPageSize !== newSize) {
-        currentCartPageSize = newSize;
-        if (last && !first) {
-            --currentCartPage;
-        }
-        getCart(currentCartPage, currentCartPageSize, '', showCart, onErrorAlert);
-    }
-}

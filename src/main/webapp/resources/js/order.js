@@ -1,25 +1,33 @@
 let totalPrice = 0;
+let first, last, totalPages;
 
 $(document).ready(function () {
-    $('#next-page').click(nextPage);
-    $('#prev-page').click(previousPage);
-    getCart(currentCartPage, currentCartPageSize, '', function (resp) {
-            showCart(resp);
-            if (resp && resp.content.length !== 0) {
-                getTotalPrice(function (totalPrice) {
-                    $('#total-price').val(totalPrice);
-                }, onErrorAlert);
-            }
-        }, onErrorAlert
-    );
-
+    $('#next-page').click(nextOrderPage);
+    $('#prev-page').click(previousOrderPage);
+    getOrder();
 });
+
+function getOrder() {
+    getCart(currentCartPage, currentCartPageSize, '', onSuccessLoadOrder, onErrorAlert);
+}
+
+function onSuccessLoadOrder(resp) {
+    showCart(resp);
+    if (resp && resp.numberOfElements !== 0) {
+        getTotalPrice(function (resp) {
+            $('#total-price').val(resp)
+        }, onErrorAlert);
+    }
+}
 
 function showCart(productPage) {
     let products = $('#products');
     setPagination(productPage);
     clearChildNodes(products);
-    productPage.content.forEach(product => {
+    first = productPage.first;
+    last = productPage.last;
+    totalPages = productPage.totalPages;
+    productPage.content.forEach(function (product) {
         let tr = $('<tr></tr>');
         tr.append(buildTableData(product['id']));
         tr.append(
@@ -39,14 +47,17 @@ function onSizeChange() {
     let newSize = sizeSelect.options[sizeSelect.selectedIndex].value;
     if (currentCartPageSize !== newSize) {
         currentCartPageSize = newSize;
+        if (last && !first) {
+            --currentCartPage;
+        }
         getCart(currentCartPage, currentCartPageSize, '', showCart, onErrorAlert);
     }
 }
 
-function nextPage() {
+function nextOrderPage() {
     getCart(currentCartPage + 1, currentCartPageSize, '', showCart, onErrorAlert);
 }
 
-function previousPage() {
+function previousOrderPage() {
     getCart(currentCartPage - 1, currentCartPageSize, '', showCart, onErrorAlert);
 }

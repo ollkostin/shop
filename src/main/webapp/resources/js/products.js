@@ -1,3 +1,5 @@
+let first, last, totalPages;
+
 $(document).ready(function () {
     $('#next-page').click(nextPage);
     $('#prev-page').click(previousPage);
@@ -11,7 +13,10 @@ function showProducts(productPage) {
     let products = $('#products');
     clearChildNodes(products);
     setPagination(productPage);
-    productPage.content.forEach(product => {
+    first = productPage.first;
+    last = productPage.last;
+    totalPages = productPage.totalPages;
+    productPage.content.forEach(function (product) {
         let tr = $('<tr></tr>');
         tr.append(buildTableData(product['id']));
         tr.append(
@@ -35,7 +40,10 @@ function onSizeChange() {
     let newSize = sizeSelect.options[sizeSelect.selectedIndex].value;
     if (currentProductPageSize !== newSize) {
         currentProductPageSize = newSize;
-        getProducts(currentProductPage, currentProductPageSize, showProducts)
+        if (last && !first) {
+            --currentProductPage;
+        }
+        getProducts(currentProductPage, currentProductPageSize, showProducts, onErrorAlert)
     }
 }
 
@@ -65,11 +73,11 @@ function removeFromCartProductListPageCb() {
 }
 
 function nextPage() {
-    getProducts(currentProductPage + 1, currentProductPageSize, showProducts);
+    getProducts(currentProductPage + 1, currentProductPageSize, showProducts, onErrorAlert);
 }
 
 function previousPage() {
-    getProducts(currentProductPage - 1, currentProductPageSize, showProducts);
+    getProducts(currentProductPage - 1, currentProductPageSize, showProducts, onErrorAlert);
 }
 
 function onRemoveProduct() {
@@ -78,5 +86,18 @@ function onRemoveProduct() {
     deleteProduct(productId, '', function (resp) {
         currentRow.remove();
         alert('Product was deleted');
+        changePageOnDelete();
     }, onErrorAlert);
+}
+
+function changePageOnDelete() {
+    if ($('#products tr').length === 0) {
+        if (first) {
+            getProducts(currentCartPage, currentCartPageSize, showProducts, onErrorAlert);
+        } else if (last) {
+            getProducts(currentCartPage - 1, currentCartPageSize, showProducts, onErrorAlert);
+        }
+    } else if ((first && totalPages != 1) || (!first && !last)) {
+        getProducts(currentCartPage, currentCartPageSize, showProducts, onErrorAlert);
+    }
 }
