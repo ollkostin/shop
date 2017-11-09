@@ -16,6 +16,7 @@ public class ProductEntity {
     private String name;
     private BigDecimal price;
     private String description;
+    private Boolean removed;
     @OneToMany(mappedBy = "product")
     private List<ProductPhotoEntity> photoList;
 }

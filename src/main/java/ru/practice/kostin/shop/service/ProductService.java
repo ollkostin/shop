@@ -5,14 +5,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import ru.practice.kostin.shop.exception.NotAllowedException;
 import ru.practice.kostin.shop.persistence.entity.ProductEntity;
 import ru.practice.kostin.shop.persistence.repository.ProductRepository;
 import ru.practice.kostin.shop.service.dto.product.ProductFullDTO;
 import ru.practice.kostin.shop.service.dto.product.ProductShortDTO;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import javax.transaction.Transactional;
-import java.util.List;
 
 @Service
 public class ProductService {
@@ -25,7 +27,7 @@ public class ProductService {
      */
     @Transactional
     public Page<ProductShortDTO> getProducts(Pageable pageable) {
-        return productRepository.findAll(pageable).map(ProductShortDTO::new);
+        return productRepository.findAll(this::notRemovedProductPredicate, pageable).map(ProductShortDTO::new);
     }
 
     /**
@@ -38,7 +40,7 @@ public class ProductService {
     @Transactional
     public ProductFullDTO getProduct(Integer productId) throws NotFoundException {
         ProductEntity productEntity = productRepository.findOne(productId);
-        if (productEntity == null) {
+        if (productEntity == null || productEntity.getRemoved()) {
             throw new NotFoundException(String.format("Product with id:%d does not exist", productId));
         }
         return new ProductFullDTO(productEntity);
@@ -46,23 +48,23 @@ public class ProductService {
 
     /**
      * Deletes product by id
+     *
      * @param productId product id
      * @throws NotFoundException if product was not found
      */
     @Transactional
-    public void deleteProduct(Integer productId) throws NotFoundException, NotAllowedException {
+    public void deleteProduct(Integer productId) throws NotFoundException {
         ProductEntity productEntity = productRepository.findOne(productId);
         if (productEntity == null) {
             throw new NotFoundException(String.format("Product with id:%d does not exist", productId));
         }
-        List<ProductEntity> orderDetailsEntityList = productRepository.findProductInOrderDetails(productId);
-        if (orderDetailsEntityList.isEmpty()) {
-            productRepository.delete(productId);
-        } else {
-            throw new NotAllowedException("This product was already ordered, cannot delete");
-        }
+        productEntity.setRemoved(true);
+        productRepository.save(productEntity);
     }
 
+    private Predicate notRemovedProductPredicate(Root<ProductEntity> root, CriteriaQuery query, CriteriaBuilder cb) {
+        return cb.equal(root.get("removed"), false);
+    }
 
     @Autowired
     public void setProductRepository(ProductRepository productRepository) {

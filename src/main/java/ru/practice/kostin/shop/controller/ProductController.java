@@ -47,7 +47,7 @@ public class ProductController {
 
     @DeleteMapping("/{id}")
     @PreAuthorize(value = "hasRole('ROLE_VENDOR') and hasRole('ROLE_ADMIN')")
-    public ResponseEntity deleteProduct(@PathVariable("id") Integer productId) throws NotFoundException, NotAllowedException {
+    public ResponseEntity deleteProduct(@PathVariable("id") Integer productId) throws NotFoundException {
         productService.deleteProduct(productId);
         return ok().build();
     }
