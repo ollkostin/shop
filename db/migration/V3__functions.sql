@@ -1,16 +1,8 @@
-CREATE TABLE order_details (
-  order_id   SERIAL,
-  product_id SERIAL,
-  count      SMALLINT CHECK (count > 0),
-  PRIMARY KEY (order_id, product_id),
-  FOREIGN KEY (order_id) REFERENCES "order" (id) ON DELETE CASCADE,
-  FOREIGN KEY (product_id) REFERENCES "product" (id) ON DELETE RESTRICT
-);
+--##############################################
+-- Хранимые процедуры
+--##############################################
 
-ALTER TABLE "order"
-  ADD COLUMN total_price DECIMAL;
-
---очистка корзины при создании заказа
+--Очистка корзины при создании заказа
 CREATE OR REPLACE FUNCTION clear_cart()
   RETURNS TRIGGER AS
 $$
@@ -25,11 +17,13 @@ BEGIN
 END
 $$
 LANGUAGE PLPGSQL;
+
+--Триггер: Очистка корзины при создании заказа
 CREATE TRIGGER clear_cart_trigger
 AFTER INSERT ON order_details
 EXECUTE PROCEDURE clear_cart();
 
---подсчет общей стоимости заказа
+--Подсчет общей стоимости заказа
 CREATE OR REPLACE FUNCTION count_total_price(ord_id INTEGER DEFAULT NULL)
   RETURNS DECIMAL AS
 $$
@@ -52,7 +46,7 @@ END;
 $$
 LANGUAGE PLPGSQL;
 
---функция на триггер для подсчета стоимости
+--Триггерная функция подсчета стоимости заказа
 CREATE OR REPLACE FUNCTION count_total_price_on_trigger()
   RETURNS TRIGGER AS
 $$
@@ -75,11 +69,13 @@ BEGIN
 END
 $$
 LANGUAGE PLPGSQL;
+
+--Триггер: подсчет стоимости заказа при вставке, изменении, удалении
 CREATE TRIGGER count_total_price_trigger
 AFTER INSERT OR UPDATE OR DELETE ON order_details
 FOR EACH ROW EXECUTE PROCEDURE count_total_price_on_trigger();
 
---функция для обновления стоимости заказов, где ее до этого не было
+--Обновление стоимости заказов, где не была выставлена
 CREATE OR REPLACE FUNCTION set_order_total_price_where_null()
   RETURNS VOID AS
 $$
@@ -87,15 +83,16 @@ DECLARE
   r RECORD;
 BEGIN
   FOR r IN SELECT id AS id
-                       FROM "order"
-                       WHERE "order".total_price IS NULL
+           FROM "order"
+           WHERE "order".total_price IS NULL
   LOOP
     UPDATE "order"
-      SET total_price = count_total_price(r.id);
+    SET total_price = count_total_price(r.id);
   END LOOP;
 END;
 $$
 LANGUAGE PLPGSQL;
---обновляем стоимость всех заказов
+
+--Вызов функции обновления стоимости заказов
 SELECT *
 FROM set_order_total_price_where_null();
