@@ -27,7 +27,11 @@
             <td>Price</td>
         </tr>
         </thead>
-        <tbody id="products"></tbody>
+        <tbody id="products"
+               <@security.authorize access="hasRole('ROLE_ADMIN') and hasRole('ROLE_VENDOR')">
+               data-show-remove-button="true"
+               </@security.authorize>>
+        </tbody>
     </table>
 <#include "resources/ftl/pagination/pagination-buttons.ftl"/>
 </div>

@@ -54,7 +54,7 @@ function onErrorAlert(resp) {
 }
 
 function removeFromCartButton(productId, cb) {
-    let removeBtn = $('<button id="remove-btn-' + productId + '" class="btn btn-sm btn-danger">Remove from cart</button>');
+    let removeBtn = $('<button id="remove-btn-' + productId + '" class="btn btn-danger">Remove from cart</button>');
     removeBtn.click(cb);
     return removeBtn;
 }
@@ -78,7 +78,7 @@ function setPagination(page) {
 }
 
 function removeProductButton(productId, cb) {
-    let removeBtn = $('<button id="remove-btn-' + productId + '" class="btn btn-sm btn-danger">Remove product</button>');
+    let removeBtn = $('<button id="remove-btn-' + productId + '" class="btn btn-danger">Remove product</button>');
     removeBtn.click(cb);
     return removeBtn;
 }

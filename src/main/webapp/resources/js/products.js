@@ -22,7 +22,9 @@ function showProducts(productPage) {
         tr.append(buildTableData(buildProductLink(product)));
         tr.append(buildTableData(product['price']));
         tr.append(buildTableData(addToOrRemoveFromCartButton(product['id'], addToCartProductListPageCb, removeFromCartProductListPageCb)));
-        tr.append(buildTableData(removeProductButton(product['id'], onRemoveProduct)));
+        if (products.data('showRemoveButton')) {
+            tr.append(buildTableData(removeProductButton(product['id'], onRemoveProduct)));
+        }
         products.append(tr);
     });
 }

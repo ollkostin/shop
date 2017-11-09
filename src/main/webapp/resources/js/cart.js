@@ -99,9 +99,7 @@ function deleteProductFromCart() {
 function onClickClearCart() {
     clearCart(function (resp) {
         onClear();
-    }, function (resp) {
-        alert(resp.responseJSON.message);
-    })
+    }, onErrorAlert);
 }
 
 function onIncreaseCount(resp, row) {
@@ -120,13 +118,13 @@ function onDecreaseCount(resp, row) {
     --count;
     if (count === 0) {
         row.remove()
+        changePageOnDeleteLast();
     } else {
         p.text(count);
     }
     let price = row.find("td:eq(3)").text();
     totalPrice -= Number(price);
     $('#total-price').text(totalPrice);
-    changePageOnDeleteLast();
 
 }
 
@@ -174,6 +172,9 @@ function onSizeChange() {
     let newSize = sizeSelect.options[sizeSelect.selectedIndex].value;
     if (currentCartPageSize !== newSize) {
         currentCartPageSize = newSize;
+        if (last && !first) {
+            --currentCartPage;
+        }
         getCart(currentCartPage, currentCartPageSize, '', showCart, onErrorAlert);
     }
 }

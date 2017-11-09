@@ -30,8 +30,11 @@
             </span>
             <div>
                 <p id="product-description"></p>
-                <div id="add-cart-btn-div"></div>
-                <div id="remove-product-btn"></div>
+                <div id="actions" class="btn-group"
+                <@security.authorize access="hasRole('ROLE_ADMIN') and hasRole('ROLE_VENDOR')">
+                     data-show-remove-button="true"
+                </@security.authorize>>
+                </div>
             </div>
         </div>
     </div>

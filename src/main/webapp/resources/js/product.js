@@ -10,9 +10,11 @@ function onSuccessLoadProduct(product) {
     $('#product-name').text(product['name']);
     $('#product-description').text(product['description']);
     $('#product-price').text(product['price']);
-    $('#add-cart-btn-div').append(addToOrRemoveFromCartButton(product["id"], addToCartOnProductPageCb, removeFromCartOnProductPageCb));
+    $('#actions').append(addToOrRemoveFromCartButton(product["id"], addToCartOnProductPageCb, removeFromCartOnProductPageCb));
     $('#product-photos').append(buildProductPhotosBlock(product));
-    $('#remove-product-btn').append(removeProductButton(product['id'], onRemoveProduct));
+    if ($('#actions').data('showRemoveButton')){
+        $('#actions').append(removeProductButton(product['id'], onRemoveProduct));
+    }
 }
 
 function onErrorLoadProduct(resp) {
