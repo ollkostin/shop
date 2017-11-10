@@ -40,6 +40,7 @@ public class CreateProductService {
             product.setName(productDTO.getName());
             product.setDescription(productDTO.getDescription());
             product.setPrice(BigDecimal.valueOf(productDTO.getPrice()));
+            product.setRemoved(false);
             productRepository.save(product);
             savePhotos(product, productDTO.getPhotos());
             productDTO.setId(product.getId());

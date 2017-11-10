@@ -93,11 +93,11 @@ function onRemoveProduct() {
 function changePageOnDelete() {
     if ($('#products tr').length === 0) {
         if (first) {
-            getProducts(currentCartPage, currentCartPageSize, showProducts, onErrorAlert);
+            getProducts(currentProductPage, currentProductPageSize, showProducts, onErrorAlert);
         } else if (last) {
-            getProducts(currentCartPage - 1, currentCartPageSize, showProducts, onErrorAlert);
+            getProducts(currentProductPage - 1, currentProductPageSize, showProducts, onErrorAlert);
         }
     } else if ((first && totalPages != 1) || (!first && !last)) {
-        getProducts(currentCartPage, currentCartPageSize, showProducts, onErrorAlert);
+        getProducts(currentProductPage, currentProductPageSize, showProducts, onErrorAlert);
     }
 }
