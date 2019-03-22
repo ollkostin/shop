@@ -1,24 +1,26 @@
 package ru.practice.kostin.shop.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practice.kostin.shop.exception.PasswordMismatchException;
 import ru.practice.kostin.shop.exception.UserAlreadyExistsException;
+import ru.practice.kostin.shop.persistence.entity.RoleEntity;
 import ru.practice.kostin.shop.persistence.entity.RoleName;
 import ru.practice.kostin.shop.persistence.entity.UserEntity;
 import ru.practice.kostin.shop.persistence.repository.RoleRepository;
 import ru.practice.kostin.shop.persistence.repository.UserRepository;
 import ru.practice.kostin.shop.service.dto.product.NewUserDTO;
 
-import javax.transaction.Transactional;
 import java.util.Collections;
 
 @Service
+@RequiredArgsConstructor
 public class UserService {
-    private UserRepository userRepository;
-    private RoleRepository roleRepository;
-    private BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     /**
      * Creates new user
@@ -40,7 +42,9 @@ public class UserService {
         user = new UserEntity();
         user.setEmail(userDTO.getEmail());
         user.setPasswordHash(bCryptPasswordEncoder.encode(userDTO.getPassword()));
-        user.setRoles(Collections.singletonList(roleRepository.findByName(RoleName.ROLE_USER)));
+        RoleName roleName = RoleName.valueOf("ROLE_" + userDTO.getRole().toUpperCase());
+        RoleEntity role = roleRepository.findByName(roleName);
+        user.setRoles(Collections.singletonList(role));
         return userRepository.save(user);
     }
 
@@ -50,23 +54,8 @@ public class UserService {
      * @param email email
      * @return user
      */
-    @Transactional
+    @Transactional(readOnly = true)
     public UserEntity getUserByEmail(String email) {
         return userRepository.findOneByEmail(email);
-    }
-
-    @Autowired
-    public void setUserRepository(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
-
-    @Autowired
-    public void setRoleRepository(RoleRepository roleRepository) {
-        this.roleRepository = roleRepository;
-    }
-
-    @Autowired
-    public void setbCryptPasswordEncoder(BCryptPasswordEncoder bCryptPasswordEncoder) {
-        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 }

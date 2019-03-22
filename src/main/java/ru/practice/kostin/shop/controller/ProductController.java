@@ -1,14 +1,13 @@
 package ru.practice.kostin.shop.controller;
 
 import javassist.NotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import ru.practice.kostin.shop.exception.NotAllowedException;
 import ru.practice.kostin.shop.service.ProductService;
 import ru.practice.kostin.shop.service.dto.product.ProductShortDTO;
 
@@ -16,9 +15,10 @@ import static org.springframework.http.ResponseEntity.ok;
 
 @RestController
 @RequestMapping("/api/products")
+@RequiredArgsConstructor
 public class ProductController {
 
-    private ProductService productService;
+    private final ProductService productService;
 
     /**
      * Returns list of products for current page
@@ -52,8 +52,4 @@ public class ProductController {
         return ok().build();
     }
 
-    @Autowired
-    public void setProductService(ProductService productService) {
-        this.productService = productService;
-    }
 }

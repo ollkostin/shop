@@ -1,6 +1,6 @@
 package ru.practice.kostin.shop.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,8 +19,9 @@ import static org.springframework.http.ResponseEntity.created;
 
 @RestController
 @RequestMapping("/api/products/create")
+@RequiredArgsConstructor
 public class CreateProductController {
-    private CreateProductService createProductService;
+    private final CreateProductService createProductService;
 
     /**
      * Creates product.
@@ -36,10 +37,5 @@ public class CreateProductController {
             return badRequest().body(errors);
         }
         return created(URI.create("")).body(productDTO.getId());
-    }
-
-    @Autowired
-    public void setCreateProductService(CreateProductService createProductService) {
-        this.createProductService = createProductService;
     }
 }

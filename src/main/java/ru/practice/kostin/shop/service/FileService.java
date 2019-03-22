@@ -1,9 +1,10 @@
 package ru.practice.kostin.shop.service;
 
-import org.springframework.beans.factory.annotation.Value;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import ru.practice.kostin.shop.config.ImageConfig;
 import ru.practice.kostin.shop.util.FileUtil;
 
 import javax.servlet.http.HttpServletResponse;
@@ -15,14 +16,9 @@ import static ru.practice.kostin.shop.util.PhotoFileUtil.fileHasImageExtension;
 import static ru.practice.kostin.shop.util.PhotoFileUtil.isSizeAllowed;
 
 @Service
+@RequiredArgsConstructor
 public class FileService {
-
-    @Value("${shop.image.directory-path}")
-    private String fileDirectoryPath;
-    @Value("${shop.image.prefix}")
-    private String filePrefix;
-    @Value("${shop.image.placeholder-name}")
-    private String placeholderName;
+    private final ImageConfig imageConfig;
 
     /**
      * Saves image
@@ -30,15 +26,19 @@ public class FileService {
      * @param multipartFile file in in multipart/form-data format
      * @param productId     product id
      * @return path to file
-     * @throws IOException
      */
-    public String saveFile(MultipartFile multipartFile, Integer productId) throws IOException {
-        if (isSizeAllowed(multipartFile) && fileHasImageExtension(multipartFile)) {
-            return FileUtil.write(
-                    multipartFile,
-                    filePrefix + productId + "_" + multipartFile.hashCode(),
-                    fileDirectoryPath + FILE_SEPARATOR + filePrefix + productId
-            );
+    String saveFile(MultipartFile multipartFile, Integer productId) {
+        try {
+            if (isSizeAllowed(multipartFile) && fileHasImageExtension(multipartFile)) {
+                String prefix = imageConfig.getPrefix();
+                return FileUtil.write(
+                        multipartFile,
+                        prefix + productId + "_" + multipartFile.hashCode(),
+                        imageConfig.getDirectoryPath() + FILE_SEPARATOR + prefix + productId
+                );
+            }
+        } catch (IOException e) {
+            throw new RuntimeException("Cannot save file " + multipartFile.getOriginalFilename());
         }
         return null;
     }
@@ -68,20 +68,27 @@ public class FileService {
 
     /**
      * Gets image by product id and name of the file
+     *
      * @param productId product id
-     * @param filename name of the file
+     * @param filename  name of the file
      * @return product image
      */
     public File getFileByProductIdAndFilename(Integer productId, String filename) {
-        return new File(fileDirectoryPath + FILE_SEPARATOR + filePrefix + productId + FILE_SEPARATOR + filename);
+        return new File(imageConfig.getDirectoryPath()
+                + FILE_SEPARATOR
+                + imageConfig.getPrefix()
+                + productId
+                + FILE_SEPARATOR
+                + filename);
     }
 
     /**
      * Gets image placeholder.
      * Use for case when product image was not found
+     *
      * @return placeholder image
      */
     public File getPlaceholderImage() {
-        return new File(fileDirectoryPath + FILE_SEPARATOR + placeholderName);
+        return new File(imageConfig.getDirectoryPath() + FILE_SEPARATOR + imageConfig.getPlaceholderName());
     }
 }

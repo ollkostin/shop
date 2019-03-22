@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practice.kostin.shop.persistence.entity.ProductEntity;
 import ru.practice.kostin.shop.persistence.repository.ProductRepository;
 import ru.practice.kostin.shop.service.dto.product.ProductFullDTO;
@@ -14,7 +15,6 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import javax.transaction.Transactional;
 
 @Service
 public class ProductService {
@@ -25,9 +25,10 @@ public class ProductService {
      *
      * @return list of products
      */
-    @Transactional
+    @Transactional(readOnly = true)
     public Page<ProductShortDTO> getProducts(Pageable pageable) {
-        return productRepository.findAll(this::notRemovedProductPredicate, pageable).map(ProductShortDTO::new);
+        return productRepository.findAll(this::notRemovedProductPredicate, pageable)
+                                .map(ProductShortDTO::new);
     }
 
     /**
@@ -37,9 +38,9 @@ public class ProductService {
      * @return product
      * @throws NotFoundException no product with specified id
      */
-    @Transactional
+    @Transactional(readOnly = true)
     public ProductFullDTO getProduct(Integer productId) throws NotFoundException {
-        ProductEntity productEntity = productRepository.findOne(productId);
+        ProductEntity productEntity = productRepository.getOne(productId);
         if (productEntity == null || productEntity.getRemoved()) {
             throw new NotFoundException(String.format("Product with id:%d does not exist", productId));
         }
@@ -54,10 +55,9 @@ public class ProductService {
      */
     @Transactional
     public void deleteProduct(Integer productId) throws NotFoundException {
-        ProductEntity productEntity = productRepository.findOne(productId);
-        if (productEntity == null) {
-            throw new NotFoundException(String.format("Product with id:%d does not exist", productId));
-        }
+        ProductEntity productEntity = productRepository
+                .findById(productId)
+                .orElseThrow(() -> new NotFoundException(String.format("Product with id:%d does not exist", productId)));
         productEntity.setRemoved(true);
         productRepository.save(productEntity);
     }

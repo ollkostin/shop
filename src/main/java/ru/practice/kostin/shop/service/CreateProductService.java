@@ -1,6 +1,6 @@
 package ru.practice.kostin.shop.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import ru.practice.kostin.shop.persistence.entity.ProductEntity;
@@ -17,12 +17,13 @@ import java.util.*;
 import static ru.practice.kostin.shop.util.PhotoFileUtil.*;
 
 @Service
+@RequiredArgsConstructor
 public class CreateProductService {
     private static final int NAME_LENGTH = 255;
     private static final int DESCRIPTION_LENGTH = 1000;
-    private ProductRepository productRepository;
-    private ProductPhotoRepository productPhotoRepository;
-    private FileService fileService;
+    private final ProductRepository productRepository;
+    private final ProductPhotoRepository productPhotoRepository;
+    private final FileService fileService;
 
 
     /**
@@ -89,36 +90,20 @@ public class CreateProductService {
      *
      * @param product product entity
      * @param photos  image files
-     * @throws IOException
      */
-    private void savePhotos(ProductEntity product, Collection<MultipartFile> photos) throws IOException {
+    private void savePhotos(ProductEntity product, Collection<MultipartFile> photos) {
         if (photos != null && photos.size() > 0) {
-            List<ProductPhotoEntity> productPhotoEntityList = new ArrayList<>();
-            for (MultipartFile photo : photos) {
-                String fileName = fileService.saveFile(photo, product.getId());
-                if (fileName != null) {
-                    ProductPhotoEntity photoEntity = new ProductPhotoEntity();
-                    photoEntity.setProduct(product);
-                    photoEntity.setPath(fileName);
-                    productPhotoEntityList.add(photoEntity);
-                }
-            }
-            productPhotoRepository.save(productPhotoEntityList);
+            photos.stream()
+                  .map(photo -> fileService.saveFile(photo, product.getId()))
+                  .map(path -> getProductPhoto(product, path))
+                  .forEach(productPhotoRepository::save);
         }
     }
 
-    @Autowired
-    public void setFileService(FileService fileService) {
-        this.fileService = fileService;
-    }
-
-    @Autowired
-    public void setProductRepository(ProductRepository productRepository) {
-        this.productRepository = productRepository;
-    }
-
-    @Autowired
-    public void setProductPhotoRepository(ProductPhotoRepository productPhotoRepository) {
-        this.productPhotoRepository = productPhotoRepository;
+    private ProductPhotoEntity getProductPhoto(ProductEntity product, String path) {
+        ProductPhotoEntity photoEntity = new ProductPhotoEntity();
+        photoEntity.setProduct(product);
+        photoEntity.setPath(path);
+        return photoEntity;
     }
 }

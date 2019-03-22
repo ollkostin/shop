@@ -1,6 +1,6 @@
 package ru.practice.kostin.shop.security;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -9,8 +9,9 @@ import org.springframework.stereotype.Service;
 import ru.practice.kostin.shop.service.dto.product.NewUserDTO;
 
 @Service
+@RequiredArgsConstructor
 public class AuthenticationService {
-    private AuthenticationManager authManager;
+    private final AuthenticationManager authManager;
 
     /**
      * Authenticates user
@@ -25,8 +26,4 @@ public class AuthenticationService {
         SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 
-    @Autowired
-    public void setAuthManager(AuthenticationManager authManager) {
-        this.authManager = authManager;
-    }
 }

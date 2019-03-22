@@ -1,6 +1,6 @@
 package ru.practice.kostin.shop.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,8 +14,9 @@ import ru.practice.kostin.shop.service.dto.OrderDTO;
 
 @Controller
 @RequestMapping("/order")
+@RequiredArgsConstructor
 public class OrderController {
-    private OrderService orderService;
+    private final OrderService orderService;
 
     @GetMapping
     public String order() {
@@ -41,8 +42,4 @@ public class OrderController {
         return "redirect:/order";
     }
 
-    @Autowired
-    public void setOrderService(OrderService orderService) {
-        this.orderService = orderService;
-    }
 }

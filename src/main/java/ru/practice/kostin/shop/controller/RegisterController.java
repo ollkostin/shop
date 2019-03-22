@@ -1,6 +1,6 @@
 package ru.practice.kostin.shop.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -15,9 +15,10 @@ import ru.practice.kostin.shop.service.dto.product.NewUserDTO;
 
 @Controller
 @RequestMapping("/register")
+@RequiredArgsConstructor
 public class RegisterController {
-    private UserService userService;
-    private AuthenticationService authenticationService;
+    private final UserService userService;
+    private final AuthenticationService authenticationService;
 
     @GetMapping
     public String registerForm() {
@@ -30,10 +31,9 @@ public class RegisterController {
      * @param userDTO            user info
      * @param redirectAttributes redirect attributes
      * @return login page
-     * @throws PasswordMismatchException password mismatch
      */
     @PostMapping
-    public String signUp(@ModelAttribute("user") NewUserDTO userDTO, RedirectAttributes redirectAttributes) throws PasswordMismatchException {
+    public String signUp(@ModelAttribute("user") NewUserDTO userDTO, RedirectAttributes redirectAttributes) {
         try {
             userService.createUser(userDTO);
         } catch (UserAlreadyExistsException | PasswordMismatchException e) {
@@ -43,15 +43,5 @@ public class RegisterController {
         }
         authenticationService.authenticateUser(userDTO);
         return "redirect:/";
-    }
-
-    @Autowired
-    public void setUserService(UserService userService) {
-        this.userService = userService;
-    }
-
-    @Autowired
-    public void setAuthenticationService(AuthenticationService authenticationService) {
-        this.authenticationService = authenticationService;
     }
 }

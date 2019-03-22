@@ -1,7 +1,7 @@
 package ru.practice.kostin.shop.controller;
 
 import javassist.NotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
@@ -15,8 +15,9 @@ import static org.springframework.http.ResponseEntity.ok;
 
 @RestController
 @RequestMapping("/api/cart")
+@RequiredArgsConstructor
 public class UserCartController {
-    private CartService cartService;
+    private final CartService cartService;
 
     /**
      * Returns products in user's cart
@@ -91,8 +92,4 @@ public class UserCartController {
         return ok().body(cartService.getProductInCartIds(user.getId()));
     }
 
-    @Autowired
-    public void setCartService(CartService cartService) {
-        this.cartService = cartService;
-    }
 }

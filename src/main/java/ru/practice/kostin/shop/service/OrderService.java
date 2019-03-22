@@ -35,7 +35,8 @@ public class OrderService {
     @Transactional
     public Integer createOrder(Integer userId, OrderDTO orderDTO) throws IllegalArgumentException {
         validateOrderDTO(orderDTO);
-        UserEntity userEntity = userRepository.findOne(userId);
+        UserEntity userEntity = userRepository.findById(userId)
+                .orElseThrow(()->new RuntimeException());
 
         OrderEntity order = new OrderEntity();
         order.setDate(Date.from(Instant.now()));

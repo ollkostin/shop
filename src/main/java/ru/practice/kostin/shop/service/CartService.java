@@ -47,20 +47,23 @@ public class CartService {
      */
     @Transactional
     public void addProductToCart(Integer productId, Integer userId) throws NotFoundException {
-        ProductEntity productEntity = productRepository.findOne(productId);
-        if (productEntity == null) {
-            throw new NotFoundException(String.format("Product with id:%d was not found", productId));
-        }
+        ProductEntity productEntity = productRepository
+                .findById(productId)
+                .orElseThrow(() -> new NotFoundException(String.format("Product with id:%d was not found", productId)));
         CartId cartId = new CartId(userId, productId);
-        CartEntity cart = cartRepository.findOne(cartId);
-        if (cart == null) {
-            cart = new CartEntity();
-            cart.setId(cartId);
-            cart.setProduct(productEntity);
-        }
+        CartEntity cart = cartRepository
+                .findById(cartId)
+                .orElse(emptyCart(productEntity, cartId));
         Integer count = Optional.ofNullable(cart.getCount()).orElse(0);
         cart.setCount(count + 1);
         cartRepository.save(cart);
+    }
+
+    private CartEntity emptyCart(ProductEntity productEntity, CartId cartId) {
+        CartEntity newCart = new CartEntity();
+        newCart.setId(cartId);
+        newCart.setProduct(productEntity);
+        return newCart;
     }
 
     /**
@@ -75,13 +78,12 @@ public class CartService {
     @Transactional
     public void removeProductFromCart(Integer productId, Integer userId, Boolean removeAllCopies) throws NotAllowedException {
         CartId cartId = new CartId(userId, productId);
-        CartEntity cart = cartRepository.findOne(cartId);
-        if (cart == null) {
-            throw new NotAllowedException("Your cartByUserIdPredicate does not contain this product");
-        }
+        CartEntity cart = cartRepository
+                .findById(cartId)
+                .orElseThrow(() -> new NotAllowedException("Your cart does not contain this product"));
         Optional<Boolean> oRemoveAllCopies = Optional.ofNullable(removeAllCopies);
         if ((oRemoveAllCopies.isPresent() && oRemoveAllCopies.get()) || cart.getCount() == 1) {
-            cartRepository.delete(cartId);
+            cartRepository.deleteById(cartId);
         } else {
             int count = cart.getCount();
             cart.setCount(count - 1);
@@ -150,6 +152,7 @@ public class CartService {
 
     /**
      * Returns identifiers of product in cart
+     *
      * @param userId user id
      * @return list of product ids
      */

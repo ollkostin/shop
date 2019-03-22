@@ -55,7 +55,7 @@ public class FileUtil {
      * @param fileName file name
      * @return extension
      */
-    public static String getFileExtension(String fileName) {
+    static String getFileExtension(String fileName) {
         if (fileName.lastIndexOf(".") > 0) {
             return fileName.substring(fileName.lastIndexOf(".") + 1);
         }
@@ -67,7 +67,6 @@ public class FileUtil {
      *
      * @param file     file
      * @param response http response
-     * @return file in bytes
      * @throws IOException
      */
     public static void readFileIntoResponse(File file, HttpServletResponse response) throws IOException {
