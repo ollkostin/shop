@@ -10,7 +10,6 @@ import ru.practice.kostin.shop.service.FileService;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
-import java.io.IOException;
 
 @RestController
 @RequestMapping("/api/products/{productId}/photos")
@@ -25,10 +24,9 @@ public class PhotoController {
      * @param productId product id
      * @param fileId    file id
      * @param response  http response
-     * @throws IOException
      */
     @GetMapping("/{fileId}")
-    public void getPhoto(@PathVariable Integer productId, @PathVariable String fileId, HttpServletResponse response) throws IOException {
+    public void getPhoto(@PathVariable Integer productId, @PathVariable String fileId, HttpServletResponse response) {
         File file = fileService.getFileByProductIdAndFilename(productId, fileId);
         response.setStatus(HttpStatus.OK.value());
         if (!file.exists()) {

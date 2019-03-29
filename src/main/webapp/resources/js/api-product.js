@@ -44,7 +44,7 @@ function deleteProduct(productId, prefix, success, error) {
 function createProduct(product, success, error) {
     $.ajax({
         type: 'POST',
-        url: '../api/products/create/',
+        url: '../api/products/',
         data: product,
         enctype: 'multipart/form-data',
         processData: false,

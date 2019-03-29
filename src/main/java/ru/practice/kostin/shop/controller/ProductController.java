@@ -1,6 +1,5 @@
 package ru.practice.kostin.shop.controller;
 
-import javassist.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -41,14 +40,21 @@ public class ProductController {
      * @return product
      */
     @GetMapping("/{id}")
-    public ResponseEntity getProduct(@PathVariable("id") Integer productId) throws NotFoundException {
+    public ResponseEntity getProduct(@PathVariable("id") Integer productId) {
         return ok(productService.getProduct(productId));
     }
 
     @DeleteMapping("/{id}")
     @PreAuthorize(value = "hasRole('ROLE_VENDOR') and hasRole('ROLE_ADMIN')")
-    public ResponseEntity deleteProduct(@PathVariable("id") Integer productId) throws NotFoundException {
+    public ResponseEntity deleteProduct(@PathVariable("id") Integer productId) {
         productService.deleteProduct(productId);
+        return ok().build();
+    }
+
+    @PutMapping("/{id}")
+    @PreAuthorize(value = "hasRole('ROLE_VENDOR') and hasRole('ROLE_ADMIN')")
+    public ResponseEntity restoreProduct(@PathVariable("id") Integer productId) {
+        productService.restoreProduct(productId);
         return ok().build();
     }
 

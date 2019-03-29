@@ -1,6 +1,6 @@
 package ru.practice.kostin.shop.exception;
 
-public class NotAllowedException extends Exception {
+public class NotAllowedException extends RuntimeException {
 
     public NotAllowedException(String message) {
         super(message);

@@ -1,11 +1,12 @@
 package ru.practice.kostin.shop.service;
 
-import javassist.NotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import ru.practice.kostin.shop.exception.NotAllowedException;
+import ru.practice.kostin.shop.exception.NotFoundException;
 import ru.practice.kostin.shop.persistence.entity.CartEntity;
 import ru.practice.kostin.shop.persistence.entity.CartId;
 import ru.practice.kostin.shop.persistence.entity.ProductEntity;
@@ -23,9 +24,10 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class CartService {
-    private CartRepository cartRepository;
-    private ProductRepository productRepository;
+    private final CartRepository cartRepository;
+    private final ProductRepository productRepository;
 
     /**
      * Gets cartByUserIdPredicate by user id
@@ -43,10 +45,9 @@ public class CartService {
      *
      * @param productId product id
      * @param userId    user id
-     * @throws NotFoundException product was not found
      */
     @Transactional
-    public void addProductToCart(Integer productId, Integer userId) throws NotFoundException {
+    public void addProductToCart(Integer productId, Integer userId) {
         ProductEntity productEntity = productRepository
                 .findById(productId)
                 .orElseThrow(() -> new NotFoundException(String.format("Product with id:%d was not found", productId)));
@@ -73,10 +74,9 @@ public class CartService {
      * @param productId       product id
      * @param userId          user id
      * @param removeAllCopies flag  remove all copies
-     * @throws NotAllowedException no product in cartByUserIdPredicate
      */
     @Transactional
-    public void removeProductFromCart(Integer productId, Integer userId, Boolean removeAllCopies) throws NotAllowedException {
+    public void removeProductFromCart(Integer productId, Integer userId, Boolean removeAllCopies) {
         CartId cartId = new CartId(userId, productId);
         CartEntity cart = cartRepository
                 .findById(cartId)
@@ -110,7 +110,7 @@ public class CartService {
      */
     @Transactional
     public Page<CartEntity> getCart(Integer userId, Pageable pageable) {
-        return cartRepository.findAll((root, query, cb) -> cartByUserIdPredicate(root, query, cb, userId), pageable);
+        return cartRepository.findAll(getCartEntitySpecification(userId), pageable);
     }
 
 
@@ -122,7 +122,11 @@ public class CartService {
      */
     @Transactional
     public List<CartEntity> getCart(Integer userId) {
-        return cartRepository.findAll((root, query, cb) -> cartByUserIdPredicate(root, query, cb, userId));
+        return cartRepository.findAll(getCartEntitySpecification(userId));
+    }
+
+    private Specification<CartEntity> getCartEntitySpecification(Integer userId) {
+        return (root, query, cb) -> cartByUserIdPredicate(root, query, cb, userId);
     }
 
     /**
@@ -164,13 +168,4 @@ public class CartService {
                 .collect(Collectors.toList());
     }
 
-    @Autowired
-    public void setCartRepository(CartRepository cartRepository) {
-        this.cartRepository = cartRepository;
-    }
-
-    @Autowired
-    public void setProductRepository(ProductRepository productRepository) {
-        this.productRepository = productRepository;
-    }
 }

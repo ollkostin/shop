@@ -31,7 +31,8 @@ public class OrderController {
      * @return page with info of successful creation or with errors
      */
     @PostMapping("/")
-    public String createOrder(@ModelAttribute("order") OrderDTO orderDTO, @AuthenticationPrincipal CustomUserDetails user,
+    public String createOrder(@ModelAttribute("order") OrderDTO orderDTO,
+                              @AuthenticationPrincipal CustomUserDetails user,
                               RedirectAttributes redirectAttributes) {
         try {
             Integer orderId = orderService.createOrder(user.getId(), orderDTO);

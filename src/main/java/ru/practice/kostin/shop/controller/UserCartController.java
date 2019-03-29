@@ -1,13 +1,11 @@
 package ru.practice.kostin.shop.controller;
 
-import javassist.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-import ru.practice.kostin.shop.exception.NotAllowedException;
 import ru.practice.kostin.shop.security.CustomUserDetails;
 import ru.practice.kostin.shop.service.CartService;
 
@@ -35,10 +33,9 @@ public class UserCartController {
      * @param productId id of product
      * @param user      current user
      * @return http status OK
-     * @throws NotFoundException if product was not found
      */
     @PutMapping("/products/{productId}")
-    public ResponseEntity addProductToCart(@PathVariable("productId") Integer productId, @AuthenticationPrincipal CustomUserDetails user) throws NotFoundException {
+    public ResponseEntity addProductToCart(@PathVariable("productId") Integer productId, @AuthenticationPrincipal CustomUserDetails user) {
         cartService.addProductToCart(productId, user.getId());
         return ok().build();
     }
@@ -49,12 +46,11 @@ public class UserCartController {
      * @param productId id of product
      * @param user      current user
      * @return http status ok
-     * @throws NotAllowedException if cart does not contain specified product
      */
     @DeleteMapping("/products/{productId}")
     public ResponseEntity removeProductFromCart(@PathVariable("productId") Integer productId,
                                                 @RequestParam(value = "removeAll", required = false) Boolean removeAll,
-                                                @AuthenticationPrincipal CustomUserDetails user) throws NotAllowedException {
+                                                @AuthenticationPrincipal CustomUserDetails user) {
         cartService.removeProductFromCart(productId, user.getId(), removeAll);
         return ok().build();
     }

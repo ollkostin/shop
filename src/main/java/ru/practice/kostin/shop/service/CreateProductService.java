@@ -10,7 +10,6 @@ import ru.practice.kostin.shop.persistence.repository.ProductRepository;
 import ru.practice.kostin.shop.service.dto.product.NewProductDTO;
 
 import javax.transaction.Transactional;
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.*;
 
@@ -31,10 +30,9 @@ public class CreateProductService {
      *
      * @param productDTO product information
      * @return map with errors
-     * @throws IOException
      */
     @Transactional
-    public HashMap<String, List<String>> createProduct(NewProductDTO productDTO) throws IOException {
+    public HashMap<String, List<String>> createProduct(NewProductDTO productDTO) {
         HashMap<String, List<String>> errors = validateNewProductDTO(productDTO);
         if (errors.isEmpty()) {
             ProductEntity product = new ProductEntity();

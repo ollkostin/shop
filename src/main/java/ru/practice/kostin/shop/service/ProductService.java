@@ -1,11 +1,11 @@
 package ru.practice.kostin.shop.service;
 
-import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.practice.kostin.shop.exception.NotFoundException;
 import ru.practice.kostin.shop.persistence.entity.ProductEntity;
 import ru.practice.kostin.shop.persistence.repository.ProductRepository;
 import ru.practice.kostin.shop.service.dto.product.ProductFullDTO;
@@ -39,7 +39,7 @@ public class ProductService {
      * @throws NotFoundException no product with specified id
      */
     @Transactional(readOnly = true)
-    public ProductFullDTO getProduct(Integer productId) throws NotFoundException {
+    public ProductFullDTO getProduct(Integer productId) {
         ProductEntity productEntity = productRepository.getOne(productId);
         if (productEntity == null || productEntity.getRemoved()) {
             throw new NotFoundException(String.format("Product with id:%d does not exist", productId));
@@ -54,7 +54,7 @@ public class ProductService {
      * @throws NotFoundException if product was not found
      */
     @Transactional
-    public void deleteProduct(Integer productId) throws NotFoundException {
+    public void deleteProduct(Integer productId) {
         ProductEntity productEntity = productRepository
                 .findById(productId)
                 .orElseThrow(() -> new NotFoundException(String.format("Product with id:%d does not exist", productId)));
@@ -64,6 +64,14 @@ public class ProductService {
 
     private Predicate notRemovedProductPredicate(Root<ProductEntity> root, CriteriaQuery query, CriteriaBuilder cb) {
         return cb.equal(root.get("removed"), false);
+    }
+
+    @Transactional
+    public void restoreProduct(Integer productId) {
+        ProductEntity productEntity = productRepository
+                .findById(productId)
+                .orElseThrow(() -> new NotFoundException(String.format("Product with id:%d does not exist", productId)));
+
     }
 
     @Autowired

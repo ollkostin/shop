@@ -9,7 +9,6 @@ import ru.practice.kostin.shop.util.FileUtil;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
-import java.io.IOException;
 
 import static ru.practice.kostin.shop.util.FileUtil.FILE_SEPARATOR;
 import static ru.practice.kostin.shop.util.PhotoFileUtil.fileHasImageExtension;
@@ -28,17 +27,13 @@ public class FileService {
      * @return path to file
      */
     String saveFile(MultipartFile multipartFile, Integer productId) {
-        try {
-            if (isSizeAllowed(multipartFile) && fileHasImageExtension(multipartFile)) {
-                String prefix = imageConfig.getPrefix();
-                return FileUtil.write(
-                        multipartFile,
-                        prefix + productId + "_" + multipartFile.hashCode(),
-                        imageConfig.getDirectoryPath() + FILE_SEPARATOR + prefix + productId
-                );
-            }
-        } catch (IOException e) {
-            throw new RuntimeException("Cannot save file " + multipartFile.getOriginalFilename());
+        if (isSizeAllowed(multipartFile) && fileHasImageExtension(multipartFile)) {
+            String prefix = imageConfig.getPrefix();
+            return FileUtil.write(
+                    multipartFile,
+                    prefix + productId + "_" + multipartFile.hashCode(),
+                    imageConfig.getDirectoryPath() + FILE_SEPARATOR + prefix + productId
+            );
         }
         return null;
     }
@@ -48,9 +43,8 @@ public class FileService {
      *
      * @param file     file
      * @param response http response
-     * @throws IOException
      */
-    public void readFileIntoResponse(File file, HttpServletResponse response) throws IOException {
+    public void readFileIntoResponse(File file, HttpServletResponse response) {
         FileUtil.readFileIntoResponse(file, response);
     }
 

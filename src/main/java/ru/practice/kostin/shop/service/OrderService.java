@@ -1,7 +1,8 @@
 package ru.practice.kostin.shop.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import ru.practice.kostin.shop.exception.NotFoundException;
 import ru.practice.kostin.shop.persistence.entity.CartEntity;
 import ru.practice.kostin.shop.persistence.entity.OrderDetailsEntity;
 import ru.practice.kostin.shop.persistence.entity.OrderEntity;
@@ -17,12 +18,13 @@ import java.util.Date;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class OrderService {
     private static final int ADDRESS_LENGTH = 300;
 
-    private CartService cartService;
-    private OrderRepository orderRepository;
-    private UserRepository userRepository;
+    private final CartService cartService;
+    private final OrderRepository orderRepository;
+    private final UserRepository userRepository;
 
     /**
      * Creates order for user
@@ -30,13 +32,12 @@ public class OrderService {
      * @param userId   user id
      * @param orderDTO order information
      * @return order id
-     * @throws IllegalArgumentException if order info is not correct
      */
     @Transactional
-    public Integer createOrder(Integer userId, OrderDTO orderDTO) throws IllegalArgumentException {
+    public Integer createOrder(Integer userId, OrderDTO orderDTO) {
         validateOrderDTO(orderDTO);
         UserEntity userEntity = userRepository.findById(userId)
-                .orElseThrow(()->new RuntimeException());
+                                              .orElseThrow(() -> new NotFoundException("User with id " + userId + " was not found"));
 
         OrderEntity order = new OrderEntity();
         order.setDate(Date.from(Instant.now()));
@@ -57,24 +58,11 @@ public class OrderService {
         return order.getId();
     }
 
-    private void validateOrderDTO(OrderDTO orderDTO) throws IllegalArgumentException {
+    private void validateOrderDTO(OrderDTO orderDTO) {
         if (orderDTO.getAddress().isEmpty() || orderDTO.getAddress().length() > ADDRESS_LENGTH) {
-            throw new IllegalArgumentException("Address cannot be empty or contain more than " + ADDRESS_LENGTH + " characters");
+            throw new IllegalArgumentException("Address cannot be empty or contain more than "
+                    + ADDRESS_LENGTH + " characters");
         }
     }
 
-    @Autowired
-    public void setOrderRepository(OrderRepository orderRepository) {
-        this.orderRepository = orderRepository;
-    }
-
-    @Autowired
-    public void setUserRepository(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
-
-    @Autowired
-    public void setCartService(CartService cartService) {
-        this.cartService = cartService;
-    }
 }

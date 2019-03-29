@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.practice.kostin.shop.service.CreateProductService;
 import ru.practice.kostin.shop.service.dto.product.NewProductDTO;
 
-import java.io.IOException;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
@@ -18,7 +17,7 @@ import static org.springframework.http.ResponseEntity.badRequest;
 import static org.springframework.http.ResponseEntity.created;
 
 @RestController
-@RequestMapping("/api/products/create")
+@RequestMapping("/api/products")
 @RequiredArgsConstructor
 public class CreateProductController {
     private final CreateProductService createProductService;
@@ -26,12 +25,12 @@ public class CreateProductController {
     /**
      * Creates product.
      * If info was fulfilled incorrect returns list of errors.
+     *
      * @param productDTO product info
      * @return page of the product
-     * @throws IOException
      */
     @PostMapping("/")
-    public ResponseEntity createProduct(@ModelAttribute("product") NewProductDTO productDTO) throws IOException {
+    public ResponseEntity createProduct(@ModelAttribute("product") NewProductDTO productDTO) {
         HashMap<String, List<String>> errors = createProductService.createProduct(productDTO);
         if (!errors.isEmpty()) {
             return badRequest().body(errors);
