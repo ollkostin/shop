@@ -41,8 +41,8 @@ function onSuccessAddToCart(resp, productId, deleteCb) {
 }
 
 function onSuccessRemoveFromCart(resp, productId, deleteCb) {
-    $('#remove-btn-' + productId).replaceWith(addToCartButton(productId, deleteCb));
-    productListIds.splice(productListIds.indexOf(Number(productId)),1);
+    $('#remove-cart-btn-' + productId).replaceWith(addToCartButton(productId, deleteCb));
+    productListIds.splice(productListIds.indexOf(Number(productId)), 1);
 }
 
 function onSuccessLoadCart(resp) {
@@ -54,7 +54,7 @@ function onErrorAlert(resp) {
 }
 
 function removeFromCartButton(productId, cb) {
-    let removeBtn = $('<button id="remove-btn-' + productId + '" class="btn btn-danger">Remove from cart</button>');
+    let removeBtn = $('<button id="remove-cart-btn-' + productId + '" class="btn btn-danger">Remove from cart</button>');
     removeBtn.click(cb);
     return removeBtn;
 }
@@ -81,4 +81,10 @@ function removeProductButton(productId, cb) {
     let removeBtn = $('<button id="remove-btn-' + productId + '" class="btn btn-danger">Remove product</button>');
     removeBtn.click(cb);
     return removeBtn;
+}
+
+function restoreProductButton(productId, cb) {
+    let restoreBtn = $('<button id="restore-btn-' + productId + '" class="btn btn-warning">Restore product</button>');
+    restoreBtn.click(cb);
+    return restoreBtn;
 }

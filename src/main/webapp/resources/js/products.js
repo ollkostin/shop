@@ -9,6 +9,25 @@ $(document).ready(function () {
     }, onErrorAlert);
 });
 
+function productRow(product, showRemove) {
+    let tr = $('<tr></tr>');
+    tr.append(buildTableData(product['id']));
+    tr.append(
+        buildTableData(
+            buildImg('api/products/' + product['id'] + '/photos/' + product['pathToPhoto'], 50, 50)
+        )
+    );
+    tr.append(buildTableData(buildProductLink(product)));
+    tr.append(buildTableData(product['price']));
+    tr.append(buildTableData(addToOrRemoveFromCartButton(product['id'], addToCartProductListPageCb, removeFromCartProductListPageCb)));
+    if (showRemove) {
+        let button = !product['removed'] ? removeButton(product['id']) : restoreButton(product['id']);
+        tr.append(buildTableData(button));
+    }
+    return tr;
+}
+
+
 function showProducts(productPage) {
     let products = $('#products');
     clearChildNodes(products);
@@ -16,22 +35,17 @@ function showProducts(productPage) {
     first = productPage.first;
     last = productPage.last;
     totalPages = productPage.totalPages;
-    productPage.content.forEach(function (product) {
-        let tr = $('<tr></tr>');
-        tr.append(buildTableData(product['id']));
-        tr.append(
-            buildTableData(
-                buildImg('api/products/' + product['id'] + '/photos/' + product['pathToPhoto'], 50, 50)
-            )
-        );
-        tr.append(buildTableData(buildProductLink(product)));
-        tr.append(buildTableData(product['price']));
-        tr.append(buildTableData(addToOrRemoveFromCartButton(product['id'], addToCartProductListPageCb, removeFromCartProductListPageCb)));
-        if (products.data('showRemoveButton')) {
-            tr.append(buildTableData(removeProductButton(product['id'], onRemoveProduct)));
-        }
-        products.append(tr);
-    });
+    productPage.content.forEach(product =>
+        products.append(productRow(product, products.data('showRemoveButton')))
+    );
+}
+
+function removeButton(productId) {
+    return removeProductButton(productId, onRemoveProduct);
+}
+
+function restoreButton(productId) {
+    return restoreProductButton(productId, onRestoreProduct);
 }
 
 
@@ -84,20 +98,28 @@ function onRemoveProduct() {
     let currentRow = $(this).closest("tr");
     let productId = currentRow.find("td:eq(0)").text();
     deleteProduct(productId, '', function (resp) {
-        currentRow.remove();
-        alert('Product was deleted');
-        changePageOnDelete();
+        $("#remove-btn-" + productId).replaceWith(restoreButton(productId));
+        // changePageOnDeleteOrRestore();
     }, onErrorAlert);
 }
 
-function changePageOnDelete() {
+function onRestoreProduct() {
+    let currentRow = $(this).closest("tr");
+    let productId = currentRow.find("td:eq(0)").text();
+    restoreProduct(productId, '', function (resp) {
+        $("#restore-btn-" + productId).replaceWith(removeButton(productId));
+        // changePageOnDeleteOrRestore();
+    }, onErrorAlert);
+}
+
+function changePageOnDeleteOrRestore() {
     if ($('#products tr').length === 0) {
         if (first) {
             getProducts(currentProductPage, currentProductPageSize, showProducts, onErrorAlert);
         } else if (last) {
             getProducts(currentProductPage - 1, currentProductPageSize, showProducts, onErrorAlert);
         }
-    } else if ((first && totalPages != 1) || (!first && !last)) {
+    } else if ((first && totalPages !== 1) || (!first && !last)) {
         getProducts(currentProductPage, currentProductPageSize, showProducts, onErrorAlert);
     }
 }

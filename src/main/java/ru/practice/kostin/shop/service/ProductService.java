@@ -1,6 +1,6 @@
 package ru.practice.kostin.shop.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -17,8 +17,9 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 @Service
+@RequiredArgsConstructor
 public class ProductService {
-    private ProductRepository productRepository;
+    private final ProductRepository productRepository;
 
     /**
      * Returns list of products
@@ -30,6 +31,19 @@ public class ProductService {
         return productRepository.findAll(this::notRemovedProductPredicate, pageable)
                                 .map(ProductShortDTO::new);
     }
+
+
+    /**
+     * Returns list of all products
+     *
+     * @return list of all products
+     */
+    @Transactional(readOnly = true)
+    public Page<ProductShortDTO> getAllProducts(Pageable pageable) {
+        return productRepository.findAll(pageable)
+                                .map(ProductShortDTO::new);
+    }
+
 
     /**
      * Returns product by id
@@ -71,11 +85,8 @@ public class ProductService {
         ProductEntity productEntity = productRepository
                 .findById(productId)
                 .orElseThrow(() -> new NotFoundException(String.format("Product with id:%d does not exist", productId)));
+        productEntity.setRemoved(false);
+        productRepository.save(productEntity);
 
-    }
-
-    @Autowired
-    public void setProductRepository(ProductRepository productRepository) {
-        this.productRepository = productRepository;
     }
 }

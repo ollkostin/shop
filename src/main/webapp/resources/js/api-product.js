@@ -41,6 +41,15 @@ function deleteProduct(productId, prefix, success, error) {
     });
 }
 
+function restoreProduct(productId, prefix, success, error) {
+    $.ajax({
+        type: 'PUT',
+        url: prefix + 'api/products/' + productId,
+        success: success,
+        error: error
+    });
+}
+
 function createProduct(product, success, error) {
     $.ajax({
         type: 'POST',

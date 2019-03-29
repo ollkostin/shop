@@ -1,17 +1,23 @@
 package ru.practice.kostin.shop.controller;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.web.bind.annotation.*;
+import ru.practice.kostin.shop.persistence.entity.RoleName;
+import ru.practice.kostin.shop.security.CustomUserDetails;
 import ru.practice.kostin.shop.service.ProductService;
 import ru.practice.kostin.shop.service.dto.product.ProductShortDTO;
 
 import static org.springframework.http.ResponseEntity.ok;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/products")
 @RequiredArgsConstructor
@@ -26,9 +32,22 @@ public class ProductController {
      * @return list of products
      */
     @GetMapping("/")
-    public ResponseEntity getProducts(@PageableDefault Pageable pageable) {
-        Page<ProductShortDTO> products = productService.getProducts(pageable);
+    public ResponseEntity getProducts(@PageableDefault Pageable pageable, @AuthenticationPrincipal CustomUserDetails user) {
+        Page<ProductShortDTO> products;
+        if (hasAdminRole(user)) {
+            products = productService.getAllProducts(pageable);
+        } else {
+            products = productService.getProducts(pageable);
+        }
         return ok(products);
+    }
+
+    private boolean hasAdminRole(CustomUserDetails user) {
+        return user.getAuthorities().stream()
+                   .map(SimpleGrantedAuthority.class::cast)
+                   .map(SimpleGrantedAuthority::getAuthority)
+                   .anyMatch(role -> RoleName.ROLE_ADMIN.name().equals(role)
+                           || RoleName.ROLE_VENDOR.name().equals(role));
     }
 
     /**
