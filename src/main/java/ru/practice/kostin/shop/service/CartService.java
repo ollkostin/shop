@@ -24,6 +24,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class CartService {
     private final CartRepository cartRepository;
@@ -35,7 +36,6 @@ public class CartService {
      * @param userId user id
      * @return list of product DTOs
      */
-    @Transactional
     public Page<ProductInCartDTO> getProductsInCart(Integer userId, Pageable pageable) {
         return getCart(userId, pageable).map(ProductInCartDTO::new);
     }
@@ -46,7 +46,6 @@ public class CartService {
      * @param productId product id
      * @param userId    user id
      */
-    @Transactional
     public void addProductToCart(Integer productId, Integer userId) {
         ProductEntity productEntity = productRepository
                 .findById(productId)
@@ -75,7 +74,6 @@ public class CartService {
      * @param userId          user id
      * @param removeAllCopies flag  remove all copies
      */
-    @Transactional
     public void removeProductFromCart(Integer productId, Integer userId, Boolean removeAllCopies) {
         CartId cartId = new CartId(userId, productId);
         CartEntity cart = cartRepository
@@ -96,7 +94,6 @@ public class CartService {
      *
      * @param userId user id
      */
-    @Transactional
     public void clearCart(Integer userId) {
         cartRepository.deleteAllByUserId(userId);
     }
@@ -108,7 +105,6 @@ public class CartService {
      * @param pageable pagination parameters
      * @return list of product entities
      */
-    @Transactional
     public Page<CartEntity> getCart(Integer userId, Pageable pageable) {
         return cartRepository.findAll(getCartEntitySpecification(userId), pageable);
     }

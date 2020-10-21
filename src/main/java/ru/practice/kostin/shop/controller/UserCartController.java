@@ -8,6 +8,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import ru.practice.kostin.shop.security.CustomUserDetails;
 import ru.practice.kostin.shop.service.CartService;
+import ru.practice.kostin.shop.service.dto.product.ProductInCartDTO;
 
 import static org.springframework.http.ResponseEntity.ok;
 
@@ -23,7 +24,7 @@ public class UserCartController {
      * @return list of products
      */
     @GetMapping("/")
-    public ResponseEntity getCart(@PageableDefault Pageable pageable, @AuthenticationPrincipal CustomUserDetails user) {
+    public ResponseEntity<?> getCart(@PageableDefault Pageable pageable, @AuthenticationPrincipal CustomUserDetails user) {
         return ok().body(cartService.getProductsInCart(user.getId(), pageable));
     }
 
@@ -35,7 +36,7 @@ public class UserCartController {
      * @return http status OK
      */
     @PutMapping("/products/{productId}")
-    public ResponseEntity addProductToCart(@PathVariable("productId") Integer productId, @AuthenticationPrincipal CustomUserDetails user) {
+    public ResponseEntity<Void> addProductToCart(@PathVariable("productId") Integer productId, @AuthenticationPrincipal CustomUserDetails user) {
         cartService.addProductToCart(productId, user.getId());
         return ok().build();
     }
@@ -48,7 +49,7 @@ public class UserCartController {
      * @return http status ok
      */
     @DeleteMapping("/products/{productId}")
-    public ResponseEntity removeProductFromCart(@PathVariable("productId") Integer productId,
+    public ResponseEntity<Void> removeProductFromCart(@PathVariable("productId") Integer productId,
                                                 @RequestParam(value = "removeAll", required = false) Boolean removeAll,
                                                 @AuthenticationPrincipal CustomUserDetails user) {
         cartService.removeProductFromCart(productId, user.getId(), removeAll);
@@ -61,7 +62,7 @@ public class UserCartController {
      * @return http status OK
      */
     @DeleteMapping("/")
-    public ResponseEntity clearCart(@AuthenticationPrincipal CustomUserDetails user) {
+    public ResponseEntity<Void> clearCart(@AuthenticationPrincipal CustomUserDetails user) {
         cartService.clearCart(user.getId());
         return ok().build();
     }
@@ -73,7 +74,7 @@ public class UserCartController {
      * @return total price
      */
     @GetMapping("/total")
-    public ResponseEntity getTotalPrice(@AuthenticationPrincipal CustomUserDetails user) {
+    public ResponseEntity<?> getTotalPrice(@AuthenticationPrincipal CustomUserDetails user) {
         return ok().body(cartService.getTotalPrice(user.getId()));
     }
 
@@ -84,7 +85,7 @@ public class UserCartController {
      * @return list of product ids
      */
     @GetMapping("/products")
-    public ResponseEntity getProductInCartIds(@AuthenticationPrincipal CustomUserDetails user) {
+    public ResponseEntity<?> getProductInCartIds(@AuthenticationPrincipal CustomUserDetails user) {
         return ok().body(cartService.getProductInCartIds(user.getId()));
     }
 

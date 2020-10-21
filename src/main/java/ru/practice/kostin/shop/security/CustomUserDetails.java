@@ -1,42 +1,19 @@
 package ru.practice.kostin.shop.security;
 
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.Collection;
 import java.util.List;
 
+@Getter
+@RequiredArgsConstructor
 public class CustomUserDetails implements UserDetails {
-    private Integer id;
-    private String email;
-    private String passwordHash;
-    private List<GrantedAuthority> roles;
-
-    public CustomUserDetails(Integer id, String email, String passwordHash, List<GrantedAuthority> roles) {
-        this.id = id;
-        this.email = email;
-        this.passwordHash = passwordHash;
-        this.roles = roles;
-    }
-
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return roles;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    @Override
-    public String getPassword() {
-        return passwordHash;
-    }
-
-    @Override
-    public String getUsername() {
-        return email;
-    }
+    private final Integer id;
+    private final String username;
+    private final String password;
+    private final List<GrantedAuthority> authorities;
 
     @Override
     public boolean isAccountNonExpired() {

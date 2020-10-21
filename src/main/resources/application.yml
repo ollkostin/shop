@@ -1,0 +1,25 @@
+spring:
+  jpa:
+    show-sql: true
+    database-platform: org.hibernate.dialect.PostgreSQL9Dialect
+    properties:
+      hibernate.jdbc.lob.non_contextual_creation: true
+  datasource:
+    url: jdbc:postgresql://localhost:32768/shop
+    username: postgres
+    password: "0000"
+
+  freemarker:
+    template-loader-path: /
+    suffix: .ftl
+  servlet:
+    multipart:
+      max-file-size: 20MB
+      max-request-size: 30MB
+
+
+shop:
+  image:
+    directory-path: /Users/vladimirkostin/Developer/shop/img
+    prefix: product_
+    placeholder.name: placeholder

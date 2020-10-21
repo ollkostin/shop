@@ -30,7 +30,7 @@ public class CreateProductController {
      * @return page of the product
      */
     @PostMapping("/")
-    public ResponseEntity createProduct(@ModelAttribute("product") NewProductDTO productDTO) {
+    public ResponseEntity<?> createProduct(@ModelAttribute("product") NewProductDTO productDTO) {
         HashMap<String, List<String>> errors = createProductService.createProduct(productDTO);
         if (!errors.isEmpty()) {
             return badRequest().body(errors);
