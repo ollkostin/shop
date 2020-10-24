@@ -23,4 +23,11 @@ public class OrderDetailsEntity {
     public OrderDetailsEntity(){
         this.id = new OrderDetailsId();
     }
+
+    public OrderDetailsEntity(Integer count, OrderEntity order, ProductEntity product) {
+        this.id = new OrderDetailsId();
+        this.count = count;
+        this.order = order;
+        this.product = product;
+    }
 }

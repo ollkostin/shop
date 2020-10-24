@@ -144,10 +144,10 @@ public class CartService {
      * @param userId user id
      * @return predicate
      */
-    private Predicate cartByUserIdPredicate(Root<CartEntity> root, CriteriaQuery query, CriteriaBuilder cb, Integer userId) {
-        root.join("id");
-        query.orderBy(cb.asc(root.get("product")));
-        return cb.equal(root.get("id").get("userId"), userId);
+    private Predicate cartByUserIdPredicate(Root<CartEntity> root, CriteriaQuery<?> query, CriteriaBuilder cb, Integer userId) {
+        root.join(CartEntity.Fields.id);
+        query.orderBy(cb.asc(root.get(CartEntity.Fields.product)));
+        return cb.equal(root.get(CartEntity.Fields.id).get(CartId.Fields.userId), userId);
     }
 
     /**

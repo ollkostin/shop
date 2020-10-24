@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.practice.kostin.shop.persistence.entity.RoleName;
 import ru.practice.kostin.shop.security.CustomUserDetails;
 import ru.practice.kostin.shop.service.ProductService;
+import ru.practice.kostin.shop.service.dto.product.ProductFullDTO;
 import ru.practice.kostin.shop.service.dto.product.ProductShortDTO;
 
 import static org.springframework.http.ResponseEntity.ok;
@@ -32,9 +33,9 @@ public class ProductController {
      * @return list of products
      */
     @GetMapping("/")
-    public ResponseEntity getProducts(@PageableDefault Pageable pageable, @AuthenticationPrincipal CustomUserDetails user) {
+    public ResponseEntity<?> getProducts(@PageableDefault Pageable pageable, @AuthenticationPrincipal CustomUserDetails user) {
         Page<ProductShortDTO> products;
-        if (hasAdminRole(user)) {
+        if (hasAdminOrVendorRole(user)) {
             products = productService.getAllProducts(pageable);
         } else {
             products = productService.getProducts(pageable);
@@ -42,7 +43,7 @@ public class ProductController {
         return ok(products);
     }
 
-    private boolean hasAdminRole(CustomUserDetails user) {
+    private boolean hasAdminOrVendorRole(CustomUserDetails user) {
         return user.getAuthorities().stream()
                    .map(SimpleGrantedAuthority.class::cast)
                    .map(SimpleGrantedAuthority::getAuthority)
@@ -59,20 +60,20 @@ public class ProductController {
      * @return product
      */
     @GetMapping("/{id}")
-    public ResponseEntity getProduct(@PathVariable("id") Integer productId) {
+    public ResponseEntity<ProductFullDTO> getProduct(@PathVariable("id") Integer productId) {
         return ok(productService.getProduct(productId));
     }
 
     @DeleteMapping("/{id}")
     @PreAuthorize(value = "hasRole('ROLE_VENDOR') and hasRole('ROLE_ADMIN')")
-    public ResponseEntity deleteProduct(@PathVariable("id") Integer productId) {
+    public ResponseEntity<?> deleteProduct(@PathVariable("id") Integer productId) {
         productService.deleteProduct(productId);
         return ok().build();
     }
 
     @PutMapping("/{id}")
     @PreAuthorize(value = "hasRole('ROLE_VENDOR') and hasRole('ROLE_ADMIN')")
-    public ResponseEntity restoreProduct(@PathVariable("id") Integer productId) {
+    public ResponseEntity<?> restoreProduct(@PathVariable("id") Integer productId) {
         productService.restoreProduct(productId);
         return ok().build();
     }

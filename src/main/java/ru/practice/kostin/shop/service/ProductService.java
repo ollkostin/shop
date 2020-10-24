@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practice.kostin.shop.exception.NotFoundException;
 import ru.practice.kostin.shop.persistence.entity.ProductEntity;
+import ru.practice.kostin.shop.persistence.repository.CartRepository;
 import ru.practice.kostin.shop.persistence.repository.ProductRepository;
 import ru.practice.kostin.shop.service.dto.product.ProductFullDTO;
 import ru.practice.kostin.shop.service.dto.product.ProductShortDTO;
@@ -20,6 +21,7 @@ import javax.persistence.criteria.Root;
 @RequiredArgsConstructor
 public class ProductService {
     private final ProductRepository productRepository;
+    private final CartRepository cartRepository;
 
     /**
      * Returns list of products
@@ -55,8 +57,8 @@ public class ProductService {
     @Transactional(readOnly = true)
     public ProductFullDTO getProduct(Integer productId) {
         ProductEntity productEntity = productRepository.getOne(productId);
-        if (productEntity == null || productEntity.getRemoved()) {
-            throw new NotFoundException(String.format("Product with id:%d does not exist", productId));
+        if (productEntity.getRemoved()) {
+            throw new NotFoundException(getNotFoundMessage(productId));
         }
         return new ProductFullDTO(productEntity);
     }
@@ -71,12 +73,17 @@ public class ProductService {
     public void deleteProduct(Integer productId) {
         ProductEntity productEntity = productRepository
                 .findById(productId)
-                .orElseThrow(() -> new NotFoundException(String.format("Product with id:%d does not exist", productId)));
+                .orElseThrow(() -> new NotFoundException(getNotFoundMessage(productId)));
         productEntity.setRemoved(true);
         productRepository.save(productEntity);
+        cartRepository.deleteRemovedFromCart(productId);
     }
 
-    private Predicate notRemovedProductPredicate(Root<ProductEntity> root, CriteriaQuery query, CriteriaBuilder cb) {
+    private String getNotFoundMessage(Integer productId) {
+        return String.format("Product with id:%d does not exist", productId);
+    }
+
+    private Predicate notRemovedProductPredicate(Root<ProductEntity> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
         return cb.equal(root.get("removed"), false);
     }
 
@@ -84,7 +91,7 @@ public class ProductService {
     public void restoreProduct(Integer productId) {
         ProductEntity productEntity = productRepository
                 .findById(productId)
-                .orElseThrow(() -> new NotFoundException(String.format("Product with id:%d does not exist", productId)));
+                .orElseThrow(() -> new NotFoundException(getNotFoundMessage(productId)));
         productEntity.setRemoved(false);
         productRepository.save(productEntity);
 
